@@ -1,97 +1,151 @@
-# Port Knocking Tool para MikroTik
+# 🧱 PortKnocker - Herramienta de Port Knocking para MikroTik
 
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
+## 📖 Descripción
+**PortKnocker** es una herramienta avanzada en **Python** diseñada para ejecutar secuencias de *Port Knocking* en routers **MikroTik** o cualquier otro firewall compatible. 
 
-Herramienta en Python para ejecutar secuencias de port knocking hacia equipos MikroTik, permitiendo configurar cada knock individualmente con protocolo TCP o UDP.
+Permite enviar secuencias TCP (solo SYN) o UDP, registrar logs detallados y verificar si un puerto objetivo se abre correctamente tras el knocking. Es ideal para entornos de red donde se utilizan mecanismos de seguridad basados en listas dinámicas de IP (address lists).
 
-## Tabla de Contenidos
+---
 
-- [Descripción](#descripción)
-- [Características](#características)
-- [Requisitos](#requisitos)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Testing](#testing)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Ejemplos](#ejemplos)
-- [Licencia](#licencia)
+## ⚙️ Características principales
+- Envío de knocks TCP (solo SYN) y UDP.
+- Modo interactivo con validación de entradas.
+- Verificación progresiva del puerto objetivo (2s, 5s, 10s).
+- Registro detallado de logs con timestamp.
+- Guardado/carga de configuraciones JSON.
+- Soporte multiplataforma (Windows / Linux / macOS).
 
-## Descripción
+---
 
-Esta herramienta implementa un cliente de port knocking que permite ejecutar secuencias de "toques" a puertos específicos en un router MikroTik configurado con reglas de firewall de port knocking. Cada knock puede ser configurado individualmente con protocolo TCP o UDP, proporcionando mayor flexibilidad y seguridad.
+## 🧩 Requisitos
 
-El port knocking es una técnica de seguridad que oculta servicios de red hasta que se recibe una secuencia específica de intentos de conexión a puertos predefinidos.
+- **Python 3.8+**
+- Permisos de red/sockets (puede requerir ejecución como administrador en algunos entornos)
 
-## Características
+Instalación recomendada de dependencias:
 
-- ✅ Soporte para knocks TCP y UDP en la misma secuencia
-- ✅ Configuración individual de protocolo por cada knock
-- ✅ Intervalo de tiempo configurable entre knocks
-- ✅ Interfaz de línea de comandos intuitiva
-- ✅ Validación de entrada de usuario
-- ✅ Salida con formato visual claro
-- ✅ Suite completa de tests (unitarios + integración)
-- ✅ Sin dependencias externas (solo librería estándar de Python)
-
-## Requisitos
-
-- Python 3.8 o superior
-- Sistema operativo: Linux, macOS, o Windows
-- Router MikroTik configurado con reglas de port knocking
-
-## Instalación
-
-### Clonar el repositorio
 ```bash
-git clone https://github.com/tu-usuario/port-knocking-mikrotik.git
-cd port-knocking-mikrotik
+pip install -r requirements.txt  # (si corresponde)
+```
 
-```
-### Verificar instalación de Python
-```
-python3 --version
-```
-## Uso
+---
 
-### Ejecución básica
+## 🚀 Uso
+
+Ejecuta el script principal:
+
 ```bash
-python3 main.py
+python portknocker.py
 ```
-### Flujo de uso interactivo
 
-1. **Ingresar IP del MikroTik**
-Ingrese la IP del MikroTik: xxx.xxx.xx.x
-2. **Especificar cantidad de knocks**
+Sigue las instrucciones interactivas:
+1. Ingresa la IP del dispositivo MikroTik.
+2. Define la cantidad de knocks y sus puertos/protocolos.
+3. Configura el intervalo entre knocks.
+4. (Opcional) Especifica un puerto objetivo para verificar su apertura.
+5. Guarda la configuración si deseas reutilizarla.
 
-    Cantidad de knocks: 3
+---
 
-    Knock #1:
-    Puerto: 8881
-    Protocolo (TCP/UDP): tcp
+## 🧠 Ejemplo de ejecución
 
-    Knock #2:
-    Puerto: 5555
-    Protocolo (TCP/UDP): udp
+```bash
+======================================================
+HERRAMIENTA DE PORT KNOCKING - MIKROTIK
+Modo: TCP SYN-only (primer handshake)
+======================================================
 
-    Knock #3:
-    Puerto: 2222
-    Protocolo (TCP/UDP): tcp
+Ingrese la IP del MikroTik: 203.0.113.10
+Cantidad de knocks: 3
 
-4. **Definir intervalo entre knocks**
-Tiempo entre knocks (segundos): 0.5
+Knock #1:
+  Puerto: 1234
+  Protocolo: TCP
 
-5. **Confirmar y ejecutar**
-¿Ejecutar secuencia? (s/n): s
+Knock #2:
+  Puerto: 5678
+  Protocolo: UDP
 
-### Ejemplo de salida
-============================================================
-INICIANDO PORT KNOCKING A 192.168.88.1
-Total de knocks: 3 | Intervalo: 0.5s
-[1/3] Knock TCP en puerto 8881... ✓
-[2/3] Knock UDP en puerto 5555... ✓
-[3/3] Knock TCP en puerto 2222... ✓
+Knock #3:
+  Puerto: 9100
+  Protocolo: TCP
 
-============================================================
-SECUENCIA COMPLETADA - Ahora podés conectarte al servicio
+Tiempo entre knocks (segundos): 1.5
+Verificar apertura de puerto despues del knocking? (s/n): s
+Puerto que deberia abrirse: 22
+Tipo de verificacion: 1
+
+Ejecutar secuencia? (s/n): s
+```
+
+Resultado:
+```
+Knock TCP SYN puerto 1234 - Tiempo: 0.45ms
+Knock UDP puerto 5678 - Tiempo: 0.12ms
+Knock TCP SYN puerto 9100 - Tiempo: 0.47ms
+
+[*] Verificando apertura del puerto 22 con delays progresivos...
+[1/3] Esperando 2s antes de verificar...
+[+] ABIERTO despues de 2s de delay acumulado ✅
+```
+
+---
+
+## 💾 Archivos generados
+
+- `portknock_config.json` → configuración guardada.
+- `portknock_<ip>_<timestamp>.log` → registro detallado de ejecución.
+
+Ejemplo de log:
+```text
+[12:31:45.103] [INFO] Knock TCP SYN puerto 1234 - Tiempo: 0.43ms
+[12:31:46.621] [INFO] Knock UDP puerto 5678 - Tiempo: 0.15ms
+[12:31:48.001] [INFO] Puerto 22 abierto despues de 5.00s
+```
+
+---
+
+## 🧱 Ejemplo de configuración JSON
+
+```json
+{
+  "target_ip": "203.0.113.10",
+  "knock_sequence": [[1234, "tcp"], [5678, "udp"], [9100, "tcp"]],
+  "interval": 1.5,
+  "target_port": 22
+}
+```
+
+Carga automática al iniciar si el archivo `portknock_config.json` existe.
+
+---
+
+## ⚠️ Advertencias
+
+- El uso indebido de port knocking en redes externas puede ser considerado actividad intrusiva. Úselo únicamente con dispositivos bajo su control o autorización.
+- MikroTik requiere configuración previa de reglas firewall y listas de direcciones (*address lists*).
+
+---
+
+## 🧩 Estructura del proyecto
+
+```
+portknocker/
+├── portknocker.py           # Script principal
+├── portknock_config.json    # Configuración persistente (opcional)
+├── requirements.txt         # Dependencias (opcional)
+├── logs/                    # Carpeta sugerida para registros
+└── README.md                # Este archivo
+```
+
+---
+
+## 🧑‍💻 Autor
+**Francisco Vozzi**  
+🔗 GitHub: [franvozzi](https://github.com/franvozzi)
+
+---
+
+## 🛠️ Licencia
+
+Este proyecto se distribuye bajo la licencia **MIT**. Puedes usarlo, modificarlo y distribuirlo libremente, siempre que se mantenga la atribución correspondiente.
