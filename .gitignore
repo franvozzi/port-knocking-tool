@@ -1,11 +1,63 @@
+# ============================
+# ARCHIVOS DE PYTHON
+# ============================
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# ============================
+# ENTORNOS VIRTUALES
+# ============================
+.venv/
+venv/
+env/
+ENV/
+.venv.bak/
+
+# ============================
+# BUILD / DIST
+# ============================
 build/
 dist/
-*.spec
+*.egg-info/
+.eggs/
+
+# ============================
+# CONFIGURACIONES DEL SISTEMA
+# ============================
+.DS_Store
+Thumbs.db
+
+# ============================
+# ARCHIVOS TEMPORALES / LOGS
+# ============================
 *.log
-*.zip
-*.tar.gz
-*.dmg
-*.exe
-*.app
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# ============================
+# EDITORES Y ENTORNOS
+# ============================
+.vscode/
+.idea/
+
+# ============================
+# ARCHIVOS DE CONFIGURACIÓN LOCAL / CREDENCIALES
+# ============================
+src/config.json
+src/credentials.txt
+src/profile.ovpn
+
+# ============================
+# ESPECIFICACIONES Y BINARIOS
+# ============================
+VPNConnect.spec
+
+# ============================
+# ARCHIVOS DE PRUEBA / DUMMIES
+# ============================
+dummies/__pycache__/
+dummies/*.pyc
+dummies/*.pyo
