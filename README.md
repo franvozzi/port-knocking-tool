@@ -369,9 +369,3 @@ Para actualizar la configuración (IP, puertos, perfil VPN):
 3. Redistribuir a usuarios
 
 ---
-
-## Contacto y soporte
-
-**Email:** [soporte@empresa.com](mailto:soporte@empresa.com)
-**Documentación:** [Link interno]
-**Tickets:** [Sistema de tickets]
