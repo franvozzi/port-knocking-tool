@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+build/
+dist/
+*.spec
+*.log
+*.zip
+*.tar.gz
+*.dmg
+*.exe
+*.app
