@@ -1,0 +1,7 @@
+{
+  "target_ip": "203.0.113.10",
+  "knock_sequence": [[7000, "tcp"], [8000, "tcp"]],
+  "interval": 0.5,
+  "target_port": 1194,
+  "vpn_command": ["python", "openvpn_dummy.py"]
+}

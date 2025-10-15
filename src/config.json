@@ -1,0 +1,11 @@
+{
+  "target_ip": "198.50.17.129",
+  "knock_sequence": [
+    [
+      7432,
+      "tcp"
+    ]
+  ],
+  "interval": 0.5,
+  "target_port": 8291
+}

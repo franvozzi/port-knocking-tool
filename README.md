@@ -1,151 +1,377 @@
-# 🧱 PortKnocker - Herramienta de Port Knocking para MikroTik
+# Manual de Ejecución - VPN Port Knocking Tool
 
-## 📖 Descripción
-**PortKnocker** es una herramienta avanzada en **Python** diseñada para ejecutar secuencias de *Port Knocking* en routers **MikroTik** o cualquier otro firewall compatible. 
-
-Permite enviar secuencias TCP (solo SYN) o UDP, registrar logs detallados y verificar si un puerto objetivo se abre correctamente tras el knocking. Es ideal para entornos de red donde se utilizan mecanismos de seguridad basados en listas dinámicas de IP (address lists).
-
----
-
-## ⚙️ Características principales
-- Envío de knocks TCP (solo SYN) y UDP.
-- Modo interactivo con validación de entradas.
-- Verificación progresiva del puerto objetivo (2s, 5s, 10s).
-- Registro detallado de logs con timestamp.
-- Guardado/carga de configuraciones JSON.
-- Soporte multiplataforma (Windows / Linux / macOS).
+**Versión:** 1.0
+**Fecha:** Octubre 2025
+**Audiencia:** Soporte IT / Administradores de Sistemas
 
 ---
 
-## 🧩 Requisitos
+## Índice
 
-- **Python 3.8+**
-- Permisos de red/sockets (puede requerir ejecución como administrador en algunos entornos)
-
-Instalación recomendada de dependencias:
-
-```bash
-pip install -r requirements.txt  # (si corresponde)
-```
+1. [Requisitos previos](#requisitos-previos)
+2. [Configuración inicial](#configuración-inicial)
+3. [Generación del ejecutable](#generación-del-ejecutable)
+4. [Pruebas](#pruebas)
+5. [Distribución a usuarios](#distribución-a-usuarios)
+6. [Solución de problemas](#solución-de-problemas)
 
 ---
 
-## 🚀 Uso
+## Requisitos previos
 
-Ejecuta el script principal:
+### Software necesario
 
-```bash
-python portknocker.py
-```
+* Python 3.9+ instalado
+* PyInstaller instalado: `pip install pyinstaller`
+* Archivo `.ovpn` del servidor VPN
+* (Opcional) Archivo de ícono en `resources/icon.ico`
 
-Sigue las instrucciones interactivas:
-1. Ingresa la IP del dispositivo MikroTik.
-2. Define la cantidad de knocks y sus puertos/protocolos.
-3. Configura el intervalo entre knocks.
-4. (Opcional) Especifica un puerto objetivo para verificar su apertura.
-5. Guarda la configuración si deseas reutilizarla.
+### Estructura del proyecto
 
----
-
-## 🧠 Ejemplo de ejecución
-
-```bash
-======================================================
-HERRAMIENTA DE PORT KNOCKING - MIKROTIK
-Modo: TCP SYN-only (primer handshake)
-======================================================
-
-Ingrese la IP del MikroTik: 203.0.113.10
-Cantidad de knocks: 3
-
-Knock #1:
-  Puerto: 1234
-  Protocolo: TCP
-
-Knock #2:
-  Puerto: 5678
-  Protocolo: UDP
-
-Knock #3:
-  Puerto: 9100
-  Protocolo: TCP
-
-Tiempo entre knocks (segundos): 1.5
-Verificar apertura de puerto despues del knocking? (s/n): s
-Puerto que deberia abrirse: 22
-Tipo de verificacion: 1
-
-Ejecutar secuencia? (s/n): s
-```
-
-Resultado:
-```
-Knock TCP SYN puerto 1234 - Tiempo: 0.45ms
-Knock UDP puerto 5678 - Tiempo: 0.12ms
-Knock TCP SYN puerto 9100 - Tiempo: 0.47ms
-
-[*] Verificando apertura del puerto 22 con delays progresivos...
-[1/3] Esperando 2s antes de verificar...
-[+] ABIERTO despues de 2s de delay acumulado ✅
-```
-
----
-
-## 💾 Archivos generados
-
-- `portknock_config.json` → configuración guardada.
-- `portknock_<ip>_<timestamp>.log` → registro detallado de ejecución.
-
-Ejemplo de log:
 ```text
-[12:31:45.103] [INFO] Knock TCP SYN puerto 1234 - Tiempo: 0.43ms
-[12:31:46.621] [INFO] Knock UDP puerto 5678 - Tiempo: 0.15ms
-[12:31:48.001] [INFO] Puerto 22 abierto despues de 5.00s
+port-knocking-tool/
+├── dummies/                  # Scripts de prueba
+├── src/                      # Código de producción
+│   ├── gui_main.py
+│   ├── main.py
+│   ├── configurador_config.py
+│   └── importar_ovpn.py
+├── resources/
+│   └── icon.ico
+└── README.md
 ```
 
 ---
 
-## 🧱 Ejemplo de configuración JSON
+## Configuración inicial
+
+### Paso 1: Importar perfil VPN
+
+Ejecutá el script de importación de perfiles:
+
+```bash
+cd src/
+python importar_ovpn.py
+```
+
+**Acciones del script:**
+
+* Busca archivos `.ovpn` en la carpeta actual
+* Si no encuentra ninguno, solicita la ruta del archivo
+* Copia el archivo a `src/` y lo renombra a `profile.ovpn`
+* (Opcional) Solicita credenciales y crea `credentials.txt`
+
+**Ejemplo de ejecución:**
+
+```text
+============================================================
+  Configurador de Perfil OpenVPN - VPN Corporativa
+============================================================
+
+Paso 1: Importar archivo .ovpn
+------------------------------------------------------------
+
+✗ No se encontró ningún archivo .ovpn en la carpeta actual.
+
+Ingrese la ruta del archivo .ovpn que desea importar:
+Ruta del archivo .ovpn: ~/VPN/empresa.ovpn
+
+✓ Archivo copiado exitosamente
+✓ Archivo renombrado a 'profile.ovpn'
+
+Paso 2: Configurar credenciales
+------------------------------------------------------------
+Crear credentials.txt? (s/n): s
+Usuario VPN: admin
+Clave VPN: ********
+
+✓ Archivo credentials.txt creado exitosamente.
+
+============================================================
+  Resumen de archivos configurados:
+============================================================
+  ✓ profile.ovpn (2048 bytes)
+  ✓ credentials.txt (18 bytes)
+
+✓ Configuración completada exitosamente.
+```
+
+**Archivos generados:**
+
+* `src/profile.ovpn`
+* `src/credentials.txt` (opcional)
+
+---
+
+### Paso 2: Configurar port knocking
+
+Ejecutá el script de configuración:
+
+```bash
+python configurador_config.py
+```
+
+**Acciones del script:**
+
+* Solicita IP pública del servidor
+* Solicita secuencia de puertos para knocking
+* Solicita intervalo entre knocks
+* Solicita puerto final a habilitar (VPN)
+* Genera `config.json`
+
+**Ejemplo de ejecución:**
+
+```text
+=== Configurador de config.json para Port Knocking ===
+IP pública del servidor: 203.0.113.10
+
+Ingrese secuencia de knocks (Enter vacío para terminar):
+  Puerto: 7000
+  Protocolo (tcp/udp): tcp
+  Puerto: 8000
+  Protocolo (tcp/udp): tcp
+  Puerto:
+
+Intervalo entre knocks en segundos (ej: 0.5): 0.5
+Puerto final a habilitar (ej: 1194): 1194
+
+✓ Archivo config.json guardado correctamente.
+```
+
+**Archivo generado:**
+
+* `src/config.json`
+
+**Contenido de ejemplo:**
 
 ```json
 {
   "target_ip": "203.0.113.10",
-  "knock_sequence": [[1234, "tcp"], [5678, "udp"], [9100, "tcp"]],
-  "interval": 1.5,
-  "target_port": 22
+  "knock_sequence": [
+    [7000, "tcp"],
+    [8000, "tcp"]
+  ],
+  "interval": 0.5,
+  "target_port": 1194
 }
 ```
 
-Carga automática al iniciar si el archivo `portknock_config.json` existe.
-
 ---
 
-## ⚠️ Advertencias
+### Paso 3: Verificar archivos
 
-- El uso indebido de port knocking en redes externas puede ser considerado actividad intrusiva. Úselo únicamente con dispositivos bajo su control o autorización.
-- MikroTik requiere configuración previa de reglas firewall y listas de direcciones (*address lists*).
+Antes de compilar, verificá que estén todos los archivos necesarios:
 
----
-
-## 🧩 Estructura del proyecto
-
-```
-portknocker/
-├── portknocker.py           # Script principal
-├── portknock_config.json    # Configuración persistente (opcional)
-├── requirements.txt         # Dependencias (opcional)
-├── logs/                    # Carpeta sugerida para registros
-└── README.md                # Este archivo
+```bash
+cd src/
+ls -la
 ```
 
+**Deberías ver:**
+
+* ✅ `gui_main.py`
+* ✅ `main.py`
+* ✅ `config.json`
+* ✅ `profile.ovpn`
+* ✅ `credentials.txt` (opcional)
+
 ---
 
-## 🧑‍💻 Autor
-**Francisco Vozzi**  
-🔗 GitHub: [franvozzi](https://github.com/franvozzi)
+## Generación del ejecutable
+
+### Compilación para macOS
+
+```bash
+cd ..  # Volver a la raíz del proyecto
+
+pyinstaller --onedir --windowed \
+  --name "VPNConnect" \
+  --icon="resources/icon.ico" \
+  --add-data "src/config.json:." \
+  --add-data "src/profile.ovpn:." \
+  --add-data "src/credentials.txt:." \
+  src/gui_main.py
+```
+
+**Resultado:**
+
+* Ejecutable en: `dist/VPNConnect.app`
+
+### Compilación para Windows
+
+```text
+pyinstaller --onefile --windowed ^
+  --name "VPNConnect" ^
+  --icon="resources\icon.ico" ^
+  --add-data "src\config.json;." ^
+  --add-data "src\profile.ovpn;." ^
+  --add-data "src\credentials.txt;." ^
+  src\gui_main.py
+```
+
+**Resultado:**
+
+* Ejecutable en: `dist\VPNConnect.exe`
+
+### Compilación para Linux
+
+```bash
+pyinstaller --onefile --windowed \
+  --name "VPNConnect" \
+  --add-data "src/config.json:." \
+  --add-data "src/profile.ovpn:." \
+  --add-data "src/credentials.txt:." \
+  src/gui_main.py
+```
+
+**Resultado:**
+
+* Ejecutable en: `dist/VPNConnect`
 
 ---
 
-## 🛠️ Licencia
+## Pruebas
 
-Este proyecto se distribuye bajo la licencia **MIT**. Puedes usarlo, modificarlo y distribuirlo libremente, siempre que se mantenga la atribución correspondiente.
+### Probar el ejecutable antes de distribuir
+
+#### macOS
+
+```bash
+open dist/VPNConnect.app
+```
+
+#### Windows
+
+```text
+dist\VPNConnect.exe
+```
+
+#### Linux
+
+```bash
+chmod +x dist/VPNConnect
+./dist/VPNConnect
+```
+
+### Checklist de pruebas
+
+* La ventana se abre correctamente
+* Botón "Conectar" funciona
+* Port knocking se ejecuta (revisar logs)
+* OpenVPN se conecta (si hay servidor de prueba)
+* Botón "Desconectar" funciona
+* Mensajes de error se muestran correctamente
+
+---
+
+## Distribución a usuarios
+
+### macOS
+
+**Opción 1:** Distribuir `.app` directamente
+
+```bash
+# Comprimir
+zip -r VPNConnect.zip dist/VPNConnect.app
+```
+
+Enviar por correo o compartir en red.
+
+**Opción 2:** Crear instalador `.dmg` (avanzado)
+
+```bash
+brew install create-dmg
+create-dmg 'dist/VPNConnect.app' dist/
+```
+
+### Windows
+
+**Opción 1:** Distribuir `.exe` directamente
+Enviar `VPNConnect.exe`
+
+**Opción 2:** Crear instalador `.msi` (avanzado)
+Usar **Inno Setup** o **WiX Toolset**
+
+### Linux
+
+Distribuir el binario:
+
+```bash
+tar -czvf VPNConnect-linux.tar.gz -C dist/ VPNConnect
+# O crear .deb/.rpm según distribución
+```
+
+---
+
+## Solución de problemas
+
+### Error: "config.json no encontrado"
+
+**Causa:** El archivo no fue embebido correctamente.
+**Solución:**
+
+* Verificar que `config.json` existe en `src/`
+* Recompilar con el flag `--add-data` correcto
+
+### Error: "profile.ovpn no encontrado"
+
+**Causa:** El archivo `.ovpn` no fue incluido.
+**Solución:**
+
+* Ejecutar `python importar_ovpn.py`
+* Verificar que `profile.ovpn` existe en `src/`
+* Recompilar
+
+### Error: "Port knocking fallido"
+
+**Causa:**
+
+* Secuencia incorrecta
+* Servidor no configurado
+* Firewall bloqueando
+
+**Solución:**
+
+* Verificar `config.json`
+* Probar manualmente con `telnet` o `nc`:
+
+```bash
+nc -zv 203.0.113.10 7000
+nc -zv 203.0.113.10 8000
+```
+
+Verificar configuración del firewall del servidor.
+
+### El ejecutable no se abre en macOS
+
+**Causa:** Permisos de seguridad de macOS.
+**Solución:**
+
+```bash
+chmod +x dist/VPNConnect.app/Contents/MacOS/VPNConnect
+xattr -cr dist/VPNConnect.app
+```
+
+Luego intentar abrir con **Ctrl + Click → "Abrir"**.
+
+---
+
+## Actualización de configuración
+
+Para actualizar la configuración (IP, puertos, perfil VPN):
+
+1. Modificar archivos en `src/`:
+
+   * `config.json`
+   * `profile.ovpn`
+   * `credentials.txt`
+2. Recompilar el ejecutable
+3. Redistribuir a usuarios
+
+---
+
+## Contacto y soporte
+
+**Email:** [soporte@empresa.com](mailto:soporte@empresa.com)
+**Documentación:** [Link interno]
+**Tickets:** [Sistema de tickets]
