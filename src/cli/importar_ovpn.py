@@ -1,13 +1,6 @@
-#!/usr/bin/env python3
-"""
-Script para importar y configurar perfiles OpenVPN
-Uso: python importar_ovpn.py
-"""
-
 import shutil
 import sys
 from pathlib import Path
-
 
 def buscar_archivo_ovpn():
     """Busca archivos .ovpn en la carpeta actual"""
@@ -19,8 +12,8 @@ def buscar_archivo_ovpn():
     if len(archivos_ovpn) == 1:
         return archivos_ovpn[0]
     
-    # Si hay múltiples archivos .ovpn
-    print(f"\nSe encontraron {len(archivos_ovpn)} archivos .ovpn:")
+    # Múltiples archivos
+    print(f"Se encontraron {len(archivos_ovpn)} archivos .ovpn:")
     for i, archivo in enumerate(archivos_ovpn, 1):
         print(f"  {i}. {archivo.name}")
     
@@ -33,10 +26,12 @@ def buscar_archivo_ovpn():
             print("✗ Opción inválida. Intente nuevamente.")
         except ValueError:
             print("✗ Debe ingresar un número.")
-
+        except KeyboardInterrupt:
+            print("\n\n✗ Operación cancelada.")
+            sys.exit(1)
 
 def solicitar_y_copiar_archivo():
-    """Solicita la ruta del archivo .ovpn y lo copia a la carpeta actual"""
+    """Solicita ruta y copia archivo"""
     print("\n✗ No se encontró ningún archivo .ovpn en la carpeta actual.")
     print("\nIngrese la ruta del archivo .ovpn que desea importar:")
     
@@ -47,7 +42,6 @@ def solicitar_y_copiar_archivo():
             print("\n✗ Operación cancelada.")
             sys.exit(0)
         
-        # Expandir ~ y rutas relativas
         archivo = Path(ruta).expanduser().resolve()
         
         if not archivo.exists():
@@ -64,7 +58,6 @@ def solicitar_y_copiar_archivo():
             if confirmar != 's':
                 continue
         
-        # Copiar archivo a la carpeta actual
         try:
             destino = Path.cwd() / archivo.name
             shutil.copy2(archivo, destino)
@@ -76,9 +69,8 @@ def solicitar_y_copiar_archivo():
             print(f"✗ Error al copiar archivo: {e}")
             continue
 
-
 def renombrar_a_profile(archivo_ovpn):
-    """Renombra el archivo .ovpn a profile.ovpn si es necesario"""
+    """Renombra a profile.ovpn"""
     if archivo_ovpn.name == "profile.ovpn":
         print(f"\n✓ El archivo ya se llama 'profile.ovpn'")
         return True
@@ -87,7 +79,7 @@ def renombrar_a_profile(archivo_ovpn):
     
     if destino.exists():
         print(f"\n⚠ El archivo 'profile.ovpn' ya existe.")
-        sobrescribir = input("  ¿Sobrescribir con el archivo actual? (s/n): ").strip().lower()
+        sobrescribir = input("  ¿Sobrescribir? (s/n): ").strip().lower()
         if sobrescribir != 's':
             print("  Manteniendo profile.ovpn existente.")
             return True
@@ -97,14 +89,13 @@ def renombrar_a_profile(archivo_ovpn):
         print(f"\n✓ Archivo renombrado a 'profile.ovpn'")
         return True
     except Exception as e:
-        print(f"✗ Error al renombrar archivo: {e}")
+        print(f"✗ Error al renombrar: {e}")
         return False
 
-
 def crear_credenciales():
-    """Crea archivo de credenciales para autenticación automática"""
+    """Crea archivo de credenciales"""
     print("\n¿Desea crear archivo de credenciales (credentials.txt)?")
-    print("  (Permite autenticación automática sin pedir usuario/clave)")
+    print("  (Permite autenticación automática)")
     
     opcion = input("Crear credentials.txt? (s/n): ").strip().lower()
     
@@ -114,34 +105,31 @@ def crear_credenciales():
     
     usuario = input("\nUsuario VPN: ").strip()
     if not usuario:
-        print("✗ Error: El usuario no puede estar vacío.")
+        print("✗ El usuario no puede estar vacío.")
         return False
     
     clave = input("Clave VPN: ").strip()
     if not clave:
-        print("✗ Error: La clave no puede estar vacía.")
+        print("✗ La clave no puede estar vacía.")
         return False
     
     try:
-        with open("credentials.txt", "w") as f:
+        with open("credentials.txt", "w", encoding='utf-8') as f:
             f.write(f"{usuario}\n{clave}\n")
         
         print("\n✓ Archivo credentials.txt creado exitosamente.")
-        print("  IMPORTANTE: Este archivo contiene credenciales sensibles.")
-        print("  Será embebido en el ejecutable final.")
+        print("  IMPORTANTE: Contiene credenciales sensibles.")
         return True
-        
     except Exception as e:
         print(f"✗ Error al crear credentials.txt: {e}")
         return False
-
 
 def main():
     print("=" * 60)
     print("  Configurador de Perfil OpenVPN - VPN Corporativa")
     print("=" * 60)
     
-    # Paso 1: Buscar o solicitar archivo .ovpn
+    # Paso 1: Buscar o solicitar archivo
     print("\nPaso 1: Importar archivo .ovpn")
     print("-" * 60)
     
@@ -152,16 +140,16 @@ def main():
     else:
         archivo_ovpn = solicitar_y_copiar_archivo()
     
-    # Paso 2: Renombrar a profile.ovpn si es necesario
+    # Paso 2: Renombrar
     if not renombrar_a_profile(archivo_ovpn):
         sys.exit(1)
     
-    # Paso 3: Crear credenciales (opcional)
+    # Paso 3: Credenciales
     print("\nPaso 2: Configurar credenciales")
     print("-" * 60)
     crear_credenciales()
     
-    # Resumen final
+    # Resumen
     print("\n" + "=" * 60)
     print("  Resumen de archivos configurados:")
     print("=" * 60)
@@ -177,10 +165,9 @@ def main():
     
     print("\n✓ Configuración completada exitosamente.")
     print("\nPróximos pasos:")
-    print("  1. Ejecutar 'python configurador_config.py' para crear config.json")
+    print("  1. Ejecutar 'python configurador_config.py'")
     print("  2. Compilar el ejecutable con PyInstaller")
     print("=" * 60)
-
 
 if __name__ == "__main__":
     try:

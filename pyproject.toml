@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vpn-port-knocking-tool"
+version = "2.0.0"
+description = "Herramienta de conexión VPN con port knocking"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Francisco Vozzi"}
+]
+keywords = ["vpn", "port-knocking", "security", "networking"]
+
+dependencies = [
+    "cryptography>=41.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.7.0",
+    "flake8>=6.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/franvozzi/port-knocking-tool"
+Repository = "https://github.com/franvozzi/port-knocking-tool"
+Issues = "https://github.com/franvozzi/port-knocking-tool/issues"
+
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"

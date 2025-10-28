@@ -1,63 +1,47 @@
-# ============================
-# ARCHIVOS DE PYTHON
-# ============================
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.so
+.Python
 
-# ============================
-# ENTORNOS VIRTUALES
-# ============================
-.venv/
-venv/
-env/
-ENV/
-.venv.bak/
-
-# ============================
-# BUILD / DIST
-# ============================
+# Distribution
 build/
 dist/
 *.egg-info/
-.eggs/
+*.egg
 
-# ============================
-# CONFIGURACIONES DEL SISTEMA
-# ============================
-.DS_Store
-Thumbs.db
+# Virtual environments
+.venv/
+venv/
+ENV/
 
-# ============================
-# ARCHIVOS TEMPORALES / LOGS
-# ============================
-*.log
-*.tmp
-*.bak
-*.swp
-*.swo
-
-# ============================
-# EDITORES Y ENTORNOS
-# ============================
+# IDEs
 .vscode/
 .idea/
+.DS_Store
 
-# ============================
-# ARCHIVOS DE CONFIGURACIÓN LOCAL / CREDENCIALES
-# ============================
-src/config.json
-src/credentials.txt
-src/profile.ovpn
+# Logs
+logs/
+*.log
 
-# ============================
-# ESPECIFICACIONES Y BINARIOS
-# ============================
-VPNConnect.spec
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
 
-# ============================
-# ARCHIVOS DE PRUEBA / DUMMIES
-# ============================
-dummies/__pycache__/
-dummies/*.pyc
-dummies/*.pyo
+# Archivos sensibles
+credentials.txt
+credentials.enc
+.key
+*.key
+
+# Temporales
+test_*.json
+test_*.enc
+.test_key
+debug.log
+
+# Build artifacts (opcional - comentar si querés versionarlos)
+build/
+dist/
+*.spec

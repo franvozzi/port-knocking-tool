@@ -1,0 +1,9 @@
+# Dependencias principales
+cryptography>=41.0.0
+pyinstaller>=6.0.0
+
+# Opcional para características avanzadas
+# scikit-learn>=1.3.0  # Para ML optimizer
+# flask>=3.0.0         # Para API REST
+# fastapi>=0.104.0     # Alternativa a Flask
+cryptography>=40.0.0
