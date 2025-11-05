@@ -3,15 +3,13 @@ import json
 from pathlib import Path
 from src.core.config_manager import ConfigManager
 from src.utils.exceptions import ConfigurationError
-from src.utils import exceptions
 
 # Test para verificar que _load_and_validate maneja archivos inexistentes
 def test_load_and_validate_missing_file():
-    try:
-        ConfigManager(config_path="/nonexistent/config.json")
-        pytest.fail("No se lanzó ConfigurationError para un archivo faltante.")
-    except exceptions.ConfigurationError as e:
-        assert "no existe" in str(e)
+    with pytest.raises(ConfigurationError, match="El archivo de configuración especificado no existe"):
+        # Instanciamos el ConfigManager con una ruta que sabemos no existe
+        manager = ConfigManager(config_path="/nonexistent/config.json")
+        # La excepción debería ser lanzada durante la inicialización
 
 # Test para verificar que _load_and_validate detecta configuración inválida
 def test_load_and_validate_invalid_content(tmp_path):
@@ -24,11 +22,8 @@ def test_load_and_validate_invalid_content(tmp_path):
     config_file = tmp_path / "config.json"
     config_file.write_text(json.dumps(invalid_config))
     
-    try:
+    with pytest.raises(ConfigurationError, match="Configuración inválida"):
         ConfigManager(config_path=str(config_file))
-        pytest.fail("No se lanzó ConfigurationError para contenido inválido.")
-    except exceptions.ConfigurationError as e:
-        assert "Configuración inválida" in str(e)
 
 # Test de un caso válido para asegurar que no se rompió la funcionalidad correcta
 def test_load_and_validate_valid_config(tmp_path):
