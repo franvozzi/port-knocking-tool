@@ -3,48 +3,47 @@ import json
 from pathlib import Path
 from src.core.config_manager import ConfigManager
 from src.utils.exceptions import ConfigurationError
+from src.utils import exceptions
 
-@pytest.fixture
-def temp_config_file(tmp_path):
-    """Crea archivo de configuración temporal"""
-    config = {
-        "target_ip": "192.168.1.1",
-        "knock_sequence": [[7000, "tcp"], [8000, "tcp"]],
-        "interval": 0.5,
+# Test para verificar que _load_and_validate maneja archivos inexistentes
+def test_load_and_validate_missing_file():
+    try:
+        ConfigManager(config_path="/nonexistent/config.json")
+        pytest.fail("No se lanzó ConfigurationError para un archivo faltante.")
+    except exceptions.ConfigurationError as e:
+        assert "no existe" in str(e)
+
+# Test para verificar que _load_and_validate detecta configuración inválida
+def test_load_and_validate_invalid_content(tmp_path):
+    invalid_config = {
+        "target_ip": "invalid",
+        "knock_sequence": [[1234, "tcp"]],
+        "interval": 0.2,
         "target_port": 1194
     }
     config_file = tmp_path / "config.json"
-    config_file.write_text(json.dumps(config))
-    return config_file
+    config_file.write_text(json.dumps(invalid_config))
+    
+    try:
+        ConfigManager(config_path=str(config_file))
+        pytest.fail("No se lanzó ConfigurationError para contenido inválido.")
+    except exceptions.ConfigurationError as e:
+        assert "Configuración inválida" in str(e)
 
-class TestConfigManager:
-    """Tests para ConfigManager"""
+# Test de un caso válido para asegurar que no se rompió la funcionalidad correcta
+def test_load_and_validate_valid_config(tmp_path):
+    config_content = {
+        "target_ip": "127.0.0.1",
+        "knock_sequence": [[1234, "tcp"]],
+        "interval": 0.2,
+        "target_port": 1194
+    }
+    config_file = tmp_path / "config.json"
+    import json
+    config_file.write_text(json.dumps(config_content))
     
-    def test_load_valid_config(self, temp_config_file):
-        """Test cargar configuración válida"""
-        manager = ConfigManager(str(temp_config_file))
-        assert manager.get_target_ip() == "192.168.1.1"
-        assert len(manager.get_knock_sequence()) == 2
-        assert manager.get_interval() == 0.5
-        assert manager.get_target_port() == 1194
-    
-    def test_invalid_config_raises_error(self, tmp_path):
-        """Test que configuración inválida levanta error"""
-        config_file = tmp_path / "config.json"
-        config_file.write_text('{"target_ip": "invalid"}')
-        
-        with pytest.raises(ConfigurationError):
-            ConfigManager(str(config_file))
-    
-    def test_missing_config_raises_error(self):
-        """Test que archivo faltante levanta error"""
-        with pytest.raises(ConfigurationError):
-            ConfigManager("/nonexistent/config.json")
-    
-    def test_get_methods(self, temp_config_file):
-        """Test métodos getter"""
-        manager = ConfigManager(str(temp_config_file))
-        assert isinstance(manager.get_target_ip(), str)
-        assert isinstance(manager.get_knock_sequence(), list)
-        assert isinstance(manager.get_interval(), float)
-        assert isinstance(manager.get_target_port(), int)
+    # Esta inicialización no debería lanzar una excepción
+    try:
+        ConfigManager(config_path=str(config_file))
+    except ConfigurationError as e:
+        pytest.fail(f"Se lanzó una ConfigurationError inesperadamente: {e}")

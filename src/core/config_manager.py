@@ -11,7 +11,18 @@ class ConfigManager:
     """Gestor de configuración del sistema"""
     
     def __init__(self, config_path: Optional[str] = None):
-        self.config_path = Path(config_path) if config_path else self._find_config()
+        self._config_path_str = config_path
+        self._load_and_validate()
+
+    def _load_and_validate(self):
+        """Carga y valida la configuración."""
+        if self._config_path_str:
+            self.config_path = Path(self._config_path_str)
+            if not self.config_path.exists():
+                raise ConfigurationError(f"El archivo de configuración especificado no existe: {self._config_path_str}")
+        else:
+            self.config_path = self._find_config()
+
         self.config = self._load_config()
         self._validate_config()
     

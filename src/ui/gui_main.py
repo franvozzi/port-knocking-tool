@@ -3,6 +3,7 @@ from tkinter import messagebox
 import threading
 import time
 from pathlib import Path
+import requests
 
 from core.config_manager import ConfigManager
 from core.port_knocker import PortKnocker
@@ -50,8 +51,28 @@ class VPNConnectGUI:
             text="VPN Corporativa",
             font=("Arial", 16, "bold")
         )
-        title.pack(pady=20)
+        title.pack(pady=10)
         
+        # --- Campo para TOTP ---
+        totp_frame = tk.Frame(self.window)
+        totp_frame.pack(pady=10)
+
+        totp_label = tk.Label(
+            totp_frame,
+            text="Código 2FA:",
+            font=("Arial", 11)
+        )
+        totp_label.pack(side=tk.LEFT, padx=5)
+
+        self.totp_entry = tk.Entry(
+            totp_frame,
+            font=("Arial", 12, "bold"),
+            width=8,
+            justify="center"
+        )
+        self.totp_entry.pack(side=tk.LEFT)
+        # --- Fin Campo para TOTP ---
+
         # Widget de estado
         self.status_bar = StatusBar(self.window)
         self.status_bar.pack(pady=10)
@@ -93,32 +114,55 @@ class VPNConnectGUI:
         thread.start()
     
     def do_connection(self):
-        """Proceso completo: port knocking + VPN"""
+        """Proceso completo: Verificación 2FA + Port Knocking + VPN"""
         try:
-            # Fase 1: Port Knocking
+            # Fase 1: Verificación 2FA
             self.status_bar.update(STATUS_MESSAGES["authenticating"], "connecting")
+            self.progress.set_progress(10)
+
+            totp_code = self.totp_entry.get()
+            if not totp_code.isdigit() or len(totp_code) != 6:
+                raise VPNToolError("El código 2FA debe ser de 6 dígitos.")
+
+            # --- Llamada a la API de verificación ---
+            # Esto requiere un servidor aparte que valide el TOTP y actualice MikroTik.
+            verification_url = self.config.get("totp_verification_url")
+            if not verification_url:
+                raise VPNToolError("La URL de verificación 2FA no está configurada.")
+
+            try:
+                response = requests.post(verification_url, json={"totp_code": totp_code}, timeout=10)
+                if response.status_code != 200 or response.json().get("status") != "success":
+                    error_msg = response.json().get("message", "Código 2FA inválido o expirado.")
+                    raise VPNToolError(error_msg)
+            except requests.RequestException as e:
+                raise VPNToolError(f"Error de red al verificar 2FA: {e}")
+
             self.progress.set_progress(30)
             
+            # Fase 2: Port Knocking
+            self.status_bar.update("Secuencia de puertos...", "connecting")
+
             success = self.knocker.execute_sequence(
-                self.config.get_target_ip(),
-                self.config.get_knock_sequence(),
-                self.config.get_interval(),
-                self.config.get_target_port(),
+                self.config.get("target_ip"),
+                self.config.get("knock_sequence"),
+                self.config.get("interval"),
+                self.config.get("target_port"),
                 progressive_check=False
             )
             
             if not success:
-                raise VPNToolError("Port knocking falló")
+                raise VPNToolError("La secuencia de Port Knocking falló.")
             
             self.progress.set_progress(60)
             
-            # Fase 2: Conectar VPN
+            # Fase 3: Conectar VPN
             self.status_bar.update(STATUS_MESSAGES["connecting"], "connecting")
             
             vpn_success = self.vpn_manager.connect("profile.ovpn", "credentials.txt")
             
             if not vpn_success:
-                raise VPNToolError("Conexión VPN falló")
+                raise VPNToolError("La conexión VPN falló.")
             
             self.progress.set_progress(100)
             
