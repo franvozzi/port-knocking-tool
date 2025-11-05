@@ -2,7 +2,7 @@
 # Manual de Usuario: Conexión Segura a la VPN Corporativa
 
 **Versión:** 1.0
-**Fecha:** Noviembre 2025
+**Fecha:** Noviembre 2023
 
 ---
 
@@ -37,7 +37,6 @@ Para generar los códigos de seguridad, usarás una aplicación en tu teléfono 
     - La aplicación reconocerá el código y añadirá una nueva entrada llamada "VPN Corporativa" (o similar).
     - Verás que muestra un **código de 6 dígitos que cambia cada 30 segundos**. Este es el código que usarás para conectarte.
 
-![Ejemplo de Google Authenticator](https://i.imgur.com/example.png) <!-- Placeholder para una imagen de la app -->
 
 ---
 
@@ -59,7 +58,6 @@ Ahora que ya tienes tu teléfono listo, el proceso para conectarte a la VPN es m
     - Una vez introducido el código, presiona el botón "Conectar".
     - La aplicación verificará tu código, realizará la conexión segura y te notificará cuando estés conectado.
 
-![Ejemplo de la aplicación VPNConnect](https://i.imgur.com/example.png) <!-- Placeholder para una imagen de la app cliente -->
 
 ---
 

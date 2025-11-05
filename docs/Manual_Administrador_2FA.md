@@ -2,7 +2,7 @@
 # Manual de Administrador: Configuración de 2FA con TOTP y Port Knocking
 
 **Versión:** 1.0
-**Fecha:** Noviembre 2025
+**Fecha:** Noviembre 2023
 **Audiencia:** Administradores de Sistemas y TI
 
 ---
@@ -37,7 +37,6 @@ El sistema consta de tres componentes principales:
 2.  **Servidor de Verificación TOTP:** Un servicio web simple que valida los códigos 2FA y se comunica con el router.
 3.  **Router MikroTik:** El firewall de la red que gestiona las listas de IPs autorizadas y la secuencia de port knocking.
 
-![Arquitectura del Sistema](https://i.imgur.com/example.png)  <!-- Placeholder para un diagrama de arquitectura -->
 
 ## Paso 1: Configuración del Router MikroTik
 
