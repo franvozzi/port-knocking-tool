@@ -1,9 +1,9 @@
 import base64
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from pathlib import Path
 from typing import Tuple
 
-from utils.exceptions import AuthenticationError
+from src.utils.exceptions import AuthenticationError
 
 class CredentialsEncryptor:
     """Gestor de cifrado de credenciales"""
@@ -42,8 +42,12 @@ class CredentialsEncryptor:
             if len(lines) != 2:
                 raise AuthenticationError("Formato de credenciales inválido")
             return lines[0], lines[1]
+        except InvalidToken:
+            raise AuthenticationError("Datos cifrados inválidos o corruptos")
+        except UnicodeDecodeError:
+            raise AuthenticationError("Error decodificando credenciales")
         except Exception as e:
-            raise AuthenticationError(f"Error descifrando credenciales: {e}")
+            raise AuthenticationError(f"Error descifrando credenciales: {str(e)}")
     
     def save_encrypted_credentials(self, username: str, password: str, 
                                    output_file: str = "credentials.enc"):

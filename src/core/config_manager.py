@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 import sys
 
-from utils.validators import ConfigValidator
-from utils.exceptions import ConfigurationError
-from utils.constants import CONFIG_FILENAME, HIDDEN_CONFIG_FILENAME
+from src.utils.validators import ConfigValidator
+from src.utils.exceptions import ConfigurationError
+from src.utils.constants import CONFIG_FILENAME, HIDDEN_CONFIG_FILENAME
 
 class ConfigManager:
     """Gestor de configuración del sistema"""

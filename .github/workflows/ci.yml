@@ -30,4 +30,5 @@ jobs:
 
     - name: Ejecutar pruebas con pytest
       run: |
+        export PYTHONPATH=src
         python -m pytest
