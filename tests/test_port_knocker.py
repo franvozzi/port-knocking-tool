@@ -12,7 +12,7 @@ class TestPortKnocker(unittest.TestCase):
     def setUp(self):
         """Se ejecuta antes de cada test"""
         self.target_ip = "192.168.88.1"
-        self.knocker = PortKnocker(self.target_ip)
+        self.knocker = PortKnocker()
     
     @patch('socket.socket')
     def test_tcp_knock_success(self, mock_socket):
@@ -254,7 +254,7 @@ class TestPortKnockerIntegration(unittest.TestCase):
         print("="*60)
         
         # Crear knocker apuntando a localhost
-        knocker = PortKnocker('127.0.0.1')
+        knocker = PortKnocker()
         
         # Definir secuencia de 5 knocks
         knock_sequence = [
@@ -321,7 +321,7 @@ class TestPortKnockerIntegration(unittest.TestCase):
         """
         print("\n[TEST] Secuencia incompleta (solo 3 de 5 knocks)")
         
-        knocker = PortKnocker('127.0.0.1')
+        knocker = PortKnocker()
         
         # Solo hacer 3 knocks de 5
         incomplete_sequence = [
@@ -348,7 +348,7 @@ class TestPortKnockerIntegration(unittest.TestCase):
         """
         print("\n[TEST] Secuencia en orden incorrecto")
         
-        knocker = PortKnocker('127.0.0.1')
+        knocker = PortKnocker()
         
         # Secuencia en orden incorrecto
         wrong_sequence = [
