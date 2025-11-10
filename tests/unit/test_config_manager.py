@@ -18,7 +18,7 @@ def temp_config_file(tmp_path):
 
 class TestConfigManager:
     """Tests para ConfigManager"""
-    
+
     def test_load_valid_config(self, temp_config_file):
         """Test cargar configuración válida"""
         manager = ConfigManager(str(temp_config_file))
@@ -27,6 +27,7 @@ class TestConfigManager:
         assert manager.get_interval() == 0.5
         assert manager.get_target_port() == 1194
     
+
     def test_invalid_config_raises_error(self, tmp_path, configuration_error):
         """Test que configuración inválida levanta error"""
         config_file = tmp_path / "config.json"
@@ -35,6 +36,10 @@ class TestConfigManager:
         with pytest.raises(configuration_error):
             ConfigManager(str(config_file))
     
+
+        with pytest.raises(configuration_error):
+            ConfigManager(str(config_file))
+
     def test_missing_config_raises_error(self, configuration_error):
         """Test que archivo faltante levanta error"""
         with pytest.raises(configuration_error):
