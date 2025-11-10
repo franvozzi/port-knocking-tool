@@ -35,9 +35,22 @@ class ConfigValidator:
         # Validar puerto objetivo
         if not self.validate_port(config['target_port']):
             self.errors.append(f"Puerto inválido: {config['target_port']}")
+
+        # Validar URL de verificación TOTP (opcional)
+        if 'totp_verification_url' in config and config['totp_verification_url']:
+            if not self.validate_url(config['totp_verification_url']):
+                self.errors.append(f"URL de verificación TOTP inválida: {config['totp_verification_url']}")
         
         return len(self.errors) == 0
     
+    @staticmethod
+    def validate_url(url: str) -> bool:
+        """Valida una URL básica"""
+        if not isinstance(url, str):
+            return False
+        # Validación simple: debe empezar con http:// o https://
+        return url.startswith("http://") or url.startswith("https://")
+
     @staticmethod
     def validate_ip(ip: str) -> bool:
         """Valida dirección IP"""

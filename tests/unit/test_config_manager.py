@@ -2,7 +2,6 @@ import pytest
 import json
 from pathlib import Path
 from src.core.config_manager import ConfigManager
-from src.utils.exceptions import ConfigurationError
 
 @pytest.fixture
 def temp_config_file(tmp_path):
@@ -28,17 +27,17 @@ class TestConfigManager:
         assert manager.get_interval() == 0.5
         assert manager.get_target_port() == 1194
     
-    def test_invalid_config_raises_error(self, tmp_path):
+    def test_invalid_config_raises_error(self, tmp_path, configuration_error):
         """Test que configuración inválida levanta error"""
         config_file = tmp_path / "config.json"
         config_file.write_text('{"target_ip": "invalid"}')
         
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(configuration_error):
             ConfigManager(str(config_file))
     
-    def test_missing_config_raises_error(self):
+    def test_missing_config_raises_error(self, configuration_error):
         """Test que archivo faltante levanta error"""
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(configuration_error):
             ConfigManager("/nonexistent/config.json")
     
     def test_get_methods(self, temp_config_file):

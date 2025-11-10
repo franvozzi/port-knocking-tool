@@ -1,7 +1,6 @@
 import pytest
 from pathlib import Path
 from src.security.crypto import CredentialsEncryptor
-from src.utils.exceptions import AuthenticationError
 
 class TestCredentialsEncryptor:
     """Tests para CredentialsEncryptor"""
@@ -35,7 +34,7 @@ class TestCredentialsEncryptor:
         assert loaded_user == username
         assert loaded_pass == password
     
-    def test_invalid_encrypted_data_raises_error(self, encryptor):
+    def test_invalid_encrypted_data_raises_error(self, encryptor, authentication_error):
         """Test que datos inválidos levantan error"""
-        with pytest.raises(AuthenticationError):
+        with pytest.raises(authentication_error):
             encryptor.decrypt_credentials(b"invalid_data")
