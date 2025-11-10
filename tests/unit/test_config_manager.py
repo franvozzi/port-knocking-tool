@@ -26,11 +26,16 @@ class TestConfigManager:
         assert len(manager.get_knock_sequence()) == 2
         assert manager.get_interval() == 0.5
         assert manager.get_target_port() == 1194
+    
 
     def test_invalid_config_raises_error(self, tmp_path, configuration_error):
         """Test que configuración inválida levanta error"""
         config_file = tmp_path / "config.json"
         config_file.write_text('{"target_ip": "invalid"}')
+        
+        with pytest.raises(configuration_error):
+            ConfigManager(str(config_file))
+    
 
         with pytest.raises(configuration_error):
             ConfigManager(str(config_file))
