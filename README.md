@@ -2,6 +2,10 @@
 
 Versión: MVP (sin 2FA/TOTP)
 
+Quick Start (Usuario)
+- Si tienes el ejecutable empaquetado: abre la aplicación `VPNConnect` desde tu sistema.
+- En desarrollo o para probar localmente: activa el entorno virtual y ejecuta `python src/gui_main.py`.
+
 Descripción
 - Herramienta para abrir un puerto VPN mediante secuencia de "port knocking" y conectar un cliente OpenVPN.
 - Incluye: UI (GUI), port-knocker, manager para OpenVPN y scripts de pruebas (E2E).
