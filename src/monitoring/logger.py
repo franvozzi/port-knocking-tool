@@ -26,29 +26,74 @@ class StructuredLogger:
         self.logger = self._setup_logger()
     
     def _setup_logger(self):
-        """Configura logger"""
         logger = logging.getLogger("VPNConnect")
         logger.setLevel(logging.DEBUG)
-        
-        # Handler para archivo
-        fh = logging.FileHandler(self.log_file, encoding='utf-8')
-        fh.setLevel(logging.DEBUG)
-        
-        # Handler para consola
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.INFO)
-        
-        # Formato
+
+        # Formato común para handlers
         formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         )
-        fh.setFormatter(formatter)
-        ch.setFormatter(formatter)
-        
-        logger.addHandler(fh)
-        logger.addHandler(ch)
-        
+
+        # Inspeccionar handlers existentes
+        existing_file_handler = None
+        existing_stream_handler = None
+        for h in logger.handlers:
+            if isinstance(h, logging.FileHandler):
+                existing_file_handler = h
+            elif isinstance(h, logging.StreamHandler):
+                existing_stream_handler = h
+
+        # Si ya existe un FileHandler pero apunta a un archivo distinto,
+        # reemplazarlo. Si apunta al mismo archivo, reutilizarlo.
+        if existing_file_handler:
+            try:
+                existing_path = Path(existing_file_handler.baseFilename).resolve()
+            except Exception:
+                existing_path = None
+
+            if existing_path != self.log_file.resolve():
+                logger.removeHandler(existing_file_handler)
+                try:
+                    existing_file_handler.close()
+                except Exception:
+                    pass
+                fh = logging.FileHandler(self.log_file, encoding='utf-8')
+                fh.setLevel(logging.DEBUG)
+                fh.setFormatter(formatter)
+                logger.addHandler(fh)
+        else:
+            # No existe FileHandler -> crear uno
+            fh = logging.FileHandler(self.log_file, encoding='utf-8')
+            fh.setLevel(logging.DEBUG)
+            fh.setFormatter(formatter)
+            logger.addHandler(fh)
+
+        # Añadir StreamHandler si no existe
+        if not existing_stream_handler:
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.INFO)
+            ch.setFormatter(formatter)
+            logger.addHandler(ch)
+
+        # Asegurar que solo haya un StreamHandler apuntando al mismo stream
+        stream_handlers = [h for h in logger.handlers if isinstance(h, logging.StreamHandler)]
+        if len(stream_handlers) > 1:
+            # conservar el primero y eliminar el resto
+            for h in stream_handlers[1:]:
+                try:
+                    logger.removeHandler(h)
+                except Exception:
+                    pass
+                try:
+                    h.close()
+                except Exception:
+                    pass
+
+        # Evitar propagación al logger raíz (evita duplicados por propagation)
+        logger.propagate = False
+
         return logger
+
     
     def log_connection_attempt(self, ip: str, success: bool, duration: float):
         """Log de intento de conexión"""

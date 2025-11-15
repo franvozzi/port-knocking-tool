@@ -4,7 +4,6 @@
     [7000, "tcp"],
     [8000, "tcp"]
   ],
-  "interval": 0.5,
-  "target_port": 1194,
-  "totp_verification_url": "http://127.0.0.1:5000/verify_totp"
+  "interval": 3,
+  "target_port": 1194
 }

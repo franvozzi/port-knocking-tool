@@ -1,0 +1,60 @@
+Informe anotado — candidatos detectados en `src/` (heurístico)
+
+Root: /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool
+
+Resumen breve:
+- Escaneados 32 módulos en `src/`.
+- 10 candidatos sin importaciones estáticas detectadas.
+
+Listado de candidatos y recomendación (revisar manualmente antes de borrar):
+
+1) src/__init__.py
+ - Motivo: archivo de paquete vacío.
+ - Recomendación: Mantener. Archivo benigno para reconocimiento de paquete.
+
+2) src/test_knockd_server.py
+ - Motivo: heurístico no detectó imports entrantes.
+ - Observación: usado por `scripts/e2e_test_knockd.py` (ejecución E2E). No mover.
+ - Recomendación: Mantener.
+
+3) src/ui/themes.py
+ - Motivo: no detectado en imports estáticos.
+ - Observación: es utilidad estética; si la UI no la importa explícitamente, podría estar sin uso.
+ - Recomendación: Revisar manualmente. Si la UI no la referencia, se puede mover a `archive/`.
+
+4) src/security/__init__.py
+ - Motivo: paquete.
+ - Recomendación: Mantener.
+
+5) src/security/totp_manager.py
+ - Motivo: stub que declara la retirada del módulo TOTP para MVP.
+ - Observación: se dejó como stub intencionalmente para indicar retiro.
+ - Recomendación: Archivar o mantener como stub (preferible archivar para limpieza, conservar historial).
+
+6) src/network/__init__.py
+ - Motivo: paquete.
+ - Recomendación: Mantener.
+
+7) src/network/mikrotik_api_client.py
+ - Motivo: no detectado en imports estáticos.
+ - Observación: cliente específico para dispositivos Mikrotik — probable integración hardware opcional.
+ - Recomendación: Archivar si no hay intención de usar Mikrotik; mantener si se planea soporte hardware.
+
+8) src/cli/importar_ovpn.py
+ - Motivo: no detectado en imports estáticos.
+ - Observación: script CLI para importar perfiles; `cleanup.sh` lo listaba para eliminar en pasos previos.
+ - Recomendación: Archivar (si el flujo de importación quedó delegada a otro mecanismo), o mantener si lo usan administradores manualmente.
+
+9) src/cli/configurador_config.py
+ - Motivo: no detectado en imports estáticos.
+ - Observación: configurador interactivo; similar a `importar_ovpn.py`.
+ - Recomendación: Archivar o mantener según uso manual.
+
+10) src/cli/__init__.py
+ - Motivo: paquete.
+ - Recomendación: Mantener.
+
+Notas finales:
+- Este informe es heurístico: no detecta imports dinámicos ni usos invocados desde tests/subprocess.
+- Antes de borrar/mover cualquier archivo, ejecutar pruebas completas y revisar manualmente el uso (grep por nombres, buscar en `scripts/` y documentación).
+- Si quieres, puedo generar un parche (diff) que mueva los archivos propuestos a `archive/` conservando historial, pero no lo aplicaré sin tu confirmación.

@@ -36,10 +36,7 @@ class ConfigValidator:
         if not self.validate_port(config['target_port']):
             self.errors.append(f"Puerto inválido: {config['target_port']}")
 
-        # Validar URL de verificación TOTP (opcional)
-        if 'totp_verification_url' in config and config['totp_verification_url']:
-            if not self.validate_url(config['totp_verification_url']):
-                self.errors.append(f"URL de verificación TOTP inválida: {config['totp_verification_url']}")
+        # (2FA retirado) Validación relacionada con TOTP eliminada para MVP
         
         return len(self.errors) == 0
     

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""
-Servidor dummy de port knocking para pruebas locales
-Escucha en los puertos configurados y simula apertura de puerto VPN
+"""Standalone server_knock.py
+
+Script autónomo para ejecutar un servidor dummy de port knocking.
+Incluye la clase `KnockServer` interna para no depender del repo.
+Soporta los mismos argumentos CLI: --config, --interval, --ports, --vpn-port
 """
 
 import socket
@@ -11,6 +13,7 @@ import json
 import argparse
 from datetime import datetime
 from pathlib import Path
+
 
 class KnockServer:
     def __init__(self, knock_ports, target_port, config_path=None, override_interval=None):
@@ -29,7 +32,8 @@ class KnockServer:
                 cfg_path = Path(__file__).parent / 'config.json'
 
             if cfg_path.exists():
-                cfg = json.load(open(cfg_path, 'r', encoding='utf-8'))
+                with open(cfg_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
             else:
                 cfg = {}
         except Exception:
@@ -51,29 +55,28 @@ class KnockServer:
             self._interval_source = "config.json"
         else:
             steps = max(1, (len(self.knock_ports) - 1))
-            # evitar división por cero; si sólo hay un puerto, permitimos SEQUENCE_TIMEOUT
             if steps == 0:
                 allowed = self.SEQUENCE_TIMEOUT
             else:
                 allowed = float(self.SEQUENCE_TIMEOUT) / steps
             self.INTERVAL_MAX = allowed
             self._interval_source = f"computed (SEQUENCE_TIMEOUT/{steps} = {self.INTERVAL_MAX}s)"
-        
+
     def listen_knock(self, port):
         """Escucha intentos de conexión en un puerto de knock"""
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(('127.0.0.1', port))
         sock.listen(5)
-        
+
         print(f"[knockd] Escuchando knocks en puerto {port}")
-        
+
         while True:
             try:
                 conn, addr = sock.accept()
                 ip = addr[0]
                 now = time.time()
-                
+
                 # Limpiar knocks antiguos (timeout)
                 if ip in self.knock_timestamps:
                     # Si ha pasado demasiado tiempo desde el último knock, reiniciar
@@ -87,41 +90,41 @@ class KnockServer:
                     if time_delta > self.INTERVAL_MAX:
                         self.knock_attempts[ip] = []
                         print(f"[knockd] Intervalo entre knocks ({time_delta:.3f}s) excede interval_max ({self.INTERVAL_MAX}s). Reiniciando secuencia de {ip}.")
-                
+
                 if ip not in self.knock_attempts:
                     self.knock_attempts[ip] = []
-                
+
                 self.knock_attempts[ip].append(port)
                 self.knock_timestamps[ip] = now
-                
+
                 timestamp = datetime.now().strftime("%H:%M:%S")
                 print(f"[{timestamp}] Knock recibido de {ip} en puerto {port} | Secuencia actual: {self.knock_attempts[ip]}")
-                
+
                 # Verificar secuencia
                 if self.knock_attempts[ip] == self.knock_ports:
                     print(f"\n{'='*60}")
                     print(f"[knockd] ✓ SECUENCIA CORRECTA de {ip}!")
                     print(f"        Abriendo puerto {self.target_port} para VPN")
                     print(f"{'='*60}\n")
-                    
+
                     self.open_vpn_port()
                     self.knock_attempts[ip] = []  # Reset
                 elif len(self.knock_attempts[ip]) >= len(self.knock_ports):
                     # Secuencia incorrecta, reiniciar
                     print(f"[knockd] ✗ Secuencia incorrecta de {ip}. Reiniciando.")
                     self.knock_attempts[ip] = []
-                
+
                 conn.close()
             except Exception as e:
                 print(f"Error en puerto {port}: {e}")
-    
+
     def open_vpn_port(self):
         """Abre el puerto VPN inmediatamente"""
         if not self.vpn_port_open:
             self.vpn_port_open = True
             t = threading.Thread(target=self._maintain_vpn_port, daemon=True)
             t.start()
-    
+
     def _maintain_vpn_port(self):
         """Mantiene el puerto VPN abierto durante 30 segundos"""
         try:
@@ -129,30 +132,30 @@ class KnockServer:
             self.vpn_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.vpn_socket.bind(('127.0.0.1', self.target_port))
             self.vpn_socket.listen(5)
-            
+
             timestamp = datetime.now().strftime("%H:%M:%S")
             print(f"[{timestamp}] [VPN] Puerto {self.target_port} ABIERTO ✓")
-            
+
             # Mantener abierto por 30 segundos
             time.sleep(30)
-            
+
             self.vpn_socket.close()
             self.vpn_port_open = False
-            
+
             timestamp = datetime.now().strftime("%H:%M:%S")
             print(f"[{timestamp}] [VPN] Puerto {self.target_port} cerrado (timeout 30s)")
-            
+
         except Exception as e:
             print(f"[VPN] Error: {e}")
             self.vpn_port_open = False
-    
+
     def start(self):
         """Inicia todos los listeners"""
         # Thread para cada puerto de knock
         for port in self.knock_ports:
             t = threading.Thread(target=self.listen_knock, args=(port,), daemon=True)
             t.start()
-        
+
         print("\n" + "="*60)
         print("  Servidor de Port Knocking (dummy) iniciado")
         print("="*60)
@@ -163,24 +166,28 @@ class KnockServer:
         print(f"  Interval source: {getattr(self, '_interval_source', 'unknown')}")
         print("\n  Presiona Ctrl+C para detener")
         print("="*60 + "\n")
-        
+
         try:
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:
             print("\n\nServidor detenido.")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Servidor dummy de port knocking para pruebas locales')
+
+def main():
+    parser = argparse.ArgumentParser(description='Servidor dummy de port knocking (standalone)')
     parser.add_argument('--config', '-c', help='Ruta al config.json a usar (opcional)')
     parser.add_argument('--interval', '-i', type=float, help='Forzar interval_max (segundos)')
     parser.add_argument('--ports', '-p', nargs='+', type=int, help='Lista de puertos knock (ej: -p 7000 8000)')
     parser.add_argument('--vpn-port', '-v', type=int, default=1194, help='Puerto VPN a abrir')
     args = parser.parse_args()
 
-    # Configuración (por defecto coincide con config.json del repo)
     KNOCK_PORTS = args.ports if args.ports else [7000, 8000]
     VPN_PORT = args.vpn_port
 
     server = KnockServer(KNOCK_PORTS, VPN_PORT, config_path=args.config, override_interval=args.interval)
     server.start()
+
+
+if __name__ == '__main__':
+    main()
