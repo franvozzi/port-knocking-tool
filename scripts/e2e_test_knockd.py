@@ -9,7 +9,7 @@ from pathlib import Path
 
 # Config
 REPO_ROOT = Path(__file__).parent
-PY = "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/.venv/bin/python"
+PY = sys.executable
 SERVER_SCRIPT = REPO_ROOT.parent / 'src' / 'test_knockd_server.py'
 INTERVAL = 3.0
 KNOCK_PORTS = [7000, 8000]
