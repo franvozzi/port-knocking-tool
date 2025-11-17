@@ -105,7 +105,6 @@ def main():
             continue
         importers = imported_by.get(m, set())
         if not importers:
-            rel = p.relative_to(ROOT)
             candidates.append({"module": m, "path": str(p), "reason": "no_static_imports_found"})
 
     report = {
