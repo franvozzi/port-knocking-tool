@@ -1,3 +1,3 @@
 from .crypto import CredentialsEncryptor
 
-__all__ = ['CredentialsEncryptor']
+__all__ = ["CredentialsEncryptor"]

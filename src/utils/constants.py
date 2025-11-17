@@ -27,7 +27,7 @@ COLORS = {
     "connecting": "#FF9800",
     "connected": "#4CAF50",
     "error": "#F44336",
-    "success": "#4CAF50"
+    "success": "#4CAF50",
 }
 
 # Mensajes de estado
@@ -38,5 +38,5 @@ STATUS_MESSAGES = {
     "connected": "✓ Conectado exitosamente",
     "error": "✗ Error de conexión",
     "disconnecting": "Desconectando...",
-    "disconnected": "Desconectado"
+    "disconnected": "Desconectado",
 }

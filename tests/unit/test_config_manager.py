@@ -1,7 +1,7 @@
 import pytest
 import json
-from pathlib import Path
 from src.core.config_manager import ConfigManager
+
 
 @pytest.fixture
 def temp_config_file(tmp_path):
@@ -10,11 +10,12 @@ def temp_config_file(tmp_path):
         "target_ip": "192.168.1.1",
         "knock_sequence": [[7000, "tcp"], [8000, "tcp"]],
         "interval": 0.5,
-        "target_port": 1194
+        "target_port": 1194,
     }
     config_file = tmp_path / "config.json"
     config_file.write_text(json.dumps(config))
     return config_file
+
 
 class TestConfigManager:
     """Tests para ConfigManager"""
@@ -26,16 +27,14 @@ class TestConfigManager:
         assert len(manager.get_knock_sequence()) == 2
         assert manager.get_interval() == 0.5
         assert manager.get_target_port() == 1194
-    
 
     def test_invalid_config_raises_error(self, tmp_path, configuration_error):
         """Test que configuración inválida levanta error"""
         config_file = tmp_path / "config.json"
         config_file.write_text('{"target_ip": "invalid"}')
-        
+
         with pytest.raises(configuration_error):
             ConfigManager(str(config_file))
-    
 
         with pytest.raises(configuration_error):
             ConfigManager(str(config_file))
@@ -44,7 +43,7 @@ class TestConfigManager:
         """Test que archivo faltante levanta error"""
         with pytest.raises(configuration_error):
             ConfigManager("/nonexistent/config.json")
-    
+
     def test_get_methods(self, temp_config_file):
         """Test métodos getter"""
         manager = ConfigManager(str(temp_config_file))

@@ -10,8 +10,8 @@ def count_handlers_of_type(logger, handler_type):
 
 def test_multiple_instances_do_not_duplicate_handlers(tmp_path):
     # Crear dos instancias sin reiniciar el proceso
-    l1 = StructuredLogger(log_file=str(tmp_path / 'a.log'))
-    l2 = StructuredLogger(log_file=str(tmp_path / 'a.log'))
+    l1 = StructuredLogger(log_file=str(tmp_path / "a.log"))
+    l2 = StructuredLogger(log_file=str(tmp_path / "a.log"))
 
     logger = logging.getLogger("VPNConnect")
 
@@ -21,8 +21,8 @@ def test_multiple_instances_do_not_duplicate_handlers(tmp_path):
 
 
 def test_replace_filehandler_when_different_file(tmp_path):
-    p1 = tmp_path / 'a.log'
-    p2 = tmp_path / 'b.log'
+    p1 = tmp_path / "a.log"
+    p2 = tmp_path / "b.log"
 
     # Primera instancia crea handler apuntando a a.log
     l1 = StructuredLogger(log_file=str(p1))

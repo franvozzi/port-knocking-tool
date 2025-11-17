@@ -10,16 +10,17 @@ from pathlib import Path
 # Config
 REPO_ROOT = Path(__file__).parent
 PY = sys.executable
-SERVER_SCRIPT = REPO_ROOT.parent / 'src' / 'test_knockd_server.py'
+SERVER_SCRIPT = REPO_ROOT.parent / "src" / "test_knockd_server.py"
 INTERVAL = 3.0
 KNOCK_PORTS = [7000, 8000]
 VPN_PORT = 1194
 STARTUP_TIMEOUT = 8
 
+
 def start_server():
     env = os.environ.copy()
-    env['PYTHONUNBUFFERED'] = '1'
-    cmd = [PY, str(SERVER_SCRIPT), '--interval', str(INTERVAL)]
+    env["PYTHONUNBUFFERED"] = "1"
+    cmd = [PY, str(SERVER_SCRIPT), "--interval", str(INTERVAL)]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, env=env)
     # wait for startup banner or timeout
     start = time.time()
@@ -32,19 +33,20 @@ def start_server():
         out_lines.append(line)
         sys.stdout.write(line)
         sys.stdout.flush()
-        if 'Servidor de Port Knocking (dummy) iniciado' in line:
+        if "Servidor de Port Knocking (dummy) iniciado" in line:
             break
     else:
         p.kill()
-        raise RuntimeError('Server startup timeout')
+        raise RuntimeError("Server startup timeout")
     return p, out_lines
+
 
 def do_knocks(delay_between=1.0):
     for port in KNOCK_PORTS:
         try:
             s = socket.socket()
             s.settimeout(2)
-            s.connect(('127.0.0.1', port))
+            s.connect(("127.0.0.1", port))
             s.close()
             print(f"client: knock {port} ok")
         except Exception as e:
@@ -69,26 +71,26 @@ def capture_until(p, keyword, timeout=10):
 
 
 def main():
-    print('Starting server...')
+    print("Starting server...")
     p, banner = start_server()
 
     try:
         # Realizar knocks con delay menor que INTERVAL
-        print('Performing knocks with delay 1s (< interval)')
+        print("Performing knocks with delay 1s (< interval)")
         do_knocks(delay_between=1.0)
 
-        ok, lines = capture_until(p, 'SECUENCIA CORRECTA', timeout=10)
+        ok, lines = capture_until(p, "SECUENCIA CORRECTA", timeout=10)
         if not ok:
-            print('FAIL: did not observe SECUENCIA CORRECTA')
+            print("FAIL: did not observe SECUENCIA CORRECTA")
             return 1
 
         # Verificar que el puerto VPN fue abierto
-        ok2, lines2 = capture_until(p, 'Puerto 1194 ABIERTO', timeout=5)
+        ok2, lines2 = capture_until(p, "Puerto 1194 ABIERTO", timeout=5)
         if not ok2:
-            print('FAIL: did not observe VPN port open message')
+            print("FAIL: did not observe VPN port open message")
             return 1
 
-        print('PASS: sequence accepted and VPN port opened')
+        print("PASS: sequence accepted and VPN port opened")
         return 0
     finally:
         try:
@@ -100,5 +102,6 @@ def main():
             except Exception:
                 pass
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())
