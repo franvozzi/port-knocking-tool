@@ -10,8 +10,8 @@ def count_handlers_of_type(logger, handler_type):
 
 def test_multiple_instances_do_not_duplicate_handlers(tmp_path):
     # Crear dos instancias sin reiniciar el proceso
-    l1 = StructuredLogger(log_file=str(tmp_path / "a.log"))
-    l2 = StructuredLogger(log_file=str(tmp_path / "a.log"))
+    _l1 = StructuredLogger(log_file=str(tmp_path / "a.log"))
+    _l2 = StructuredLogger(log_file=str(tmp_path / "a.log"))
 
     logger = logging.getLogger("VPNConnect")
 
@@ -25,7 +25,7 @@ def test_replace_filehandler_when_different_file(tmp_path):
     p2 = tmp_path / "b.log"
 
     # Primera instancia crea handler apuntando a a.log
-    l1 = StructuredLogger(log_file=str(p1))
+    _l1 = StructuredLogger(log_file=str(p1))
     logger = logging.getLogger("VPNConnect")
 
     file_handlers = [h for h in logger.handlers if isinstance(h, logging.FileHandler)]
@@ -34,7 +34,7 @@ def test_replace_filehandler_when_different_file(tmp_path):
     assert Path(fh.baseFilename).resolve() == p1.resolve()
 
     # Segunda instancia con archivo distinto debe reemplazar el FileHandler
-    l2 = StructuredLogger(log_file=str(p2))
+    _l2 = StructuredLogger(log_file=str(p2))
     logger = logging.getLogger("VPNConnect")
     file_handlers = [h for h in logger.handlers if isinstance(h, logging.FileHandler)]
     assert len(file_handlers) == 1

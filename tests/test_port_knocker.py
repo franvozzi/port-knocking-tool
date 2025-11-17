@@ -139,13 +139,13 @@ class TestPortKnockerIntegration(unittest.TestCase):
         for sock in self.knock_sockets:
             try:
                 sock.close()
-            except:
+            except Exception:
                 pass
 
         if self.protected_socket:
             try:
                 self.protected_socket.close()
-            except:
+            except Exception:
                 pass
 
     def _knock_server(self, port):
@@ -181,7 +181,7 @@ class TestPortKnockerIntegration(unittest.TestCase):
             if sock:
                 try:
                     sock.close()
-                except:
+                except Exception:
                     pass
 
     def _protected_service_server(self):
@@ -218,7 +218,7 @@ class TestPortKnockerIntegration(unittest.TestCase):
             if sock:
                 try:
                     sock.close()
-                except:
+                except Exception:
                     pass
 
     def test_full_knock_sequence_and_access(self):
