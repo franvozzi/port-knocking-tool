@@ -1,77 +1,81 @@
-# VPN Port Knocking Tool — Resumen y Guía Rápida
+# VPN Port Knocking Tool
 
-Versión: MVP (sin 2FA/TOTP)
+[![CI](https://img.shields.io/badge/ci-action-blue.svg)](https://github.com/franvozzi/port-knocking-tool/actions)
 
-Quick Start (Usuario)
-- Si tienes el ejecutable empaquetado: abre la aplicación `VPNConnect` desde tu sistema.
-- En desarrollo o para probar localmente: activa el entorno virtual y ejecuta `python src/gui_main.py`.
+Resumen
+-------
+Herramienta orientada a un MVP que habilita un puerto VPN mediante una secuencia de "port knocking". Esta versión mantiene:
 
-Descripción
-- Herramienta para abrir un puerto VPN mediante secuencia de "port knocking" y conectar un cliente OpenVPN.
-- Incluye: UI (GUI), port-knocker, manager para OpenVPN y scripts de pruebas (E2E).
+- Interfaz gráfica mínima para disparar la secuencia y gestionar la conexión VPN.
+- Motor de port-knocking configurable desde `src/config.json`.
+- Manager para orquestar el cliente OpenVPN (usa `profile.ovpn` o `src/profile.ovpn`).
+- Utilidades de prueba: servidor dummy `src/test_knockd_server.py` y script E2E `scripts/e2e_test_knockd.py`.
+
+Estado actual
+------------
+- MVP sin 2FA/TOTP: los módulos de TOTP han sido retirados para simplificar el flujo.
+- Tests: suite unitaria e integración disponible; E2E automatizado para validar el flujo.
+- CI: ejecutándose en GitHub Actions (probado en Python 3.10 y 3.11).
 
 Requisitos
-- Python 3.9+
-- Dependencias: `pip install -r requirements.txt` (y opcionalmente `-r requirements-dev.txt` para desarrollo)
-
-Quick start (desarrollador)
-1. Clonar repo y crear virtualenv
+----------
+- Python 3.9+ (recomendado 3.10/3.11)
+- Instalar dependencias:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-2. Ejecutar GUI (modo desarrollo)
+Uso rápido
+---------
+
+1) Ejecutar la UI (desarrollo):
 
 ```bash
 python src/gui_main.py
 ```
 
-3. Ejecutar servidor de prueba (dummy) que valida la secuencia
+2) Levantar el servidor dummy (para probar knocks):
 
 ```bash
 python src/test_knockd_server.py --config src/config.json --interval 3
 ```
 
-4. Ejecutar E2E (script de pruebas que arranca server y realiza knocks)
+3) Ejecutar E2E localmente (arranca el servidor y realiza la secuencia):
 
 ```bash
 python scripts/e2e_test_knockd.py
 ```
 
-Archivo de configuración
-- `src/config.json` contiene:
-  - `target_ip`: IP pública del servidor
-  - `knock_sequence`: lista de pares `[port, "tcp"|"udp"]`
-  - `interval`: valor (seg) máximo entre knocks aceptado por el servidor dummy
-  - `target_port`: puerto final que se habilita (ej. 1194)
-
-Notas importantes
-- 2FA/TOTP: el soporte para 2FA/TOTP fue removido para esta versión MVP. Los módulos relacionados fueron eliminados o sustituidos por stubs (ej. `src/security/totp_manager.py`).
-- Logger: se corrigió la duplicación de mensajes (handler deduplication) en `src/monitoring/logger.py`.
+Configuración
+-------------
+Archivo principal: `src/config.json` — contiene `knock_sequence`, `interval`, `target_ip` y `target_port`.
 
 Pruebas
-- Unit + Integration: `pytest` desde la raíz del repo
+-------
+Ejecuta todas las pruebas con:
 
 ```bash
 pytest -q
 ```
 
-- E2E: ejecutar `scripts/e2e_test_knockd.py` (requiere `python` y permisos de red locales)
+Buenas prácticas
+---------------
+- Formato y lint: `black` y `ruff`/`flake8`.
+- Workflow: desarrollar en ramas por feature y abrir PRs.
 
-Desarrollo y Contribución
-- Sugerido: usar `pre-commit`, `black` y `flake8` para consistencia. Puedo añadir configuración si quieres.
-- Workflow: crear rama por feature, abrir PR para revisión.
+Cambios recientes
+-----------------
+- Eliminado soporte 2FA/TOTP para el MVP.
+- Corregido problema de duplicación de logs (`src/monitoring/logger.py`).
+- Ajuste E2E para usar `sys.executable` y evitar rutas locales en CI.
+- Limpieza: archivados y eliminados varios ficheros no referenciados.
 
-Análisis de archivos sin uso
-- Se generó un primer reporte heurístico en `reports/unused_report.*`. El análisis incluye muchos ficheros del entorno virtual (`.venv`) y paquetes instalados — debemos excluir `.venv` y otros directorios para obtener candidatos más relevantes.
+Dónde mirar
+-----------
+- Scripts clave: `scripts/e2e_test_knockd.py`, `src/test_knockd_server.py`, `src/port_knocker.py`.
+- Reportes: `reports/unused_report_src.txt`.
 
-Siguientes pasos sugeridos
-1. Revisar `reports/unused_report.txt` y marcar archivos que se quieran inspeccionar manualmente.
-2. Re-ejecutar el analizador excluyendo `.venv` y otros paths irrelevantes (p. ej. `vpn_port_knocking_tool.egg-info`).
-3. Preparar branch y commits para eliminar/archivar archivos aprobados tras revisión.
-
-Contacto
-- Para continuar: dime si quieres que aplique el `README` directamente a `README.md`, que cree una rama y commitee los cambios, o que haga una nueva pasada al analizador filtrando `.venv` y mostrando sólo `src/`.
+Contribuir
+---------
+Si quieres que añada guías de empaquetado, instrucciones de despliegue o un changelog más detallado, lo redacto y lo comito.
