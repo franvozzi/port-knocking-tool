@@ -92,7 +92,7 @@ class MacOSVPNManager(VPNManager):
         try:
             result = subprocess.run(["pgrep", "openvpn"], capture_output=True)
             return result.returncode == 0
-        except:
+        except Exception:
             return False
 
 
@@ -134,7 +134,7 @@ class WindowsVPNManager(VPNManager):
                 ["tasklist", "/FI", "IMAGENAME eq openvpn-gui.exe"], capture_output=True, text=True
             )
             return "openvpn-gui.exe" in result.stdout
-        except:
+        except Exception:
             return False
 
 
@@ -186,7 +186,7 @@ class LinuxVPNManager(VPNManager):
         try:
             result = subprocess.run(["pgrep", "openvpn"], capture_output=True)
             return result.returncode == 0
-        except:
+        except Exception:
             return False
 
 

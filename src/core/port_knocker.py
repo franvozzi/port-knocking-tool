@@ -121,7 +121,7 @@ class PortKnocker:
             result = sock.connect_ex((ip, port))
             sock.close()
             return result == 0
-        except:
+        except Exception:
             return False
 
     def _verify_port_open(self, ip: str, port: int, attempts: int = 3) -> dict:

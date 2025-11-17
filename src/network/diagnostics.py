@@ -23,7 +23,7 @@ class NetworkDiagnostics:
         try:
             result = subprocess.run(command, capture_output=True, timeout=timeout + 1)
             return result.returncode == 0
-        except:
+        except Exception:
             return False
 
     @staticmethod
@@ -35,7 +35,7 @@ class NetworkDiagnostics:
             result = sock.connect_ex((host, port))
             sock.close()
             return result == 0
-        except:
+        except Exception:
             return False
 
     @staticmethod
@@ -46,7 +46,7 @@ class NetworkDiagnostics:
 
             response = urllib.request.urlopen("https://api.ipify.org", timeout=5)
             return response.read().decode("utf-8")
-        except:
+        except Exception:
             return "unknown"
 
     def diagnose_connection_failure(self, target_ip: str, target_port: int) -> List[str]:
@@ -76,7 +76,7 @@ class NetworkDiagnostics:
         try:
             socket.inet_aton(address)
             return True
-        except:
+        except Exception:
             return False
 
     def get_diagnostic_report(self, target_ip: str, target_port: int) -> Dict:

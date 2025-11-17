@@ -18,7 +18,7 @@ class MetricsCollector:
             try:
                 with open(self.metrics_file, "r") as f:
                     return json.load(f)
-            except:
+            except (json.JSONDecodeError, OSError):
                 pass
 
         return {
