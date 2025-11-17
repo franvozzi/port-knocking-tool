@@ -1,6 +1,6 @@
 # VPN Port Knocking Tool
 
-[![CI](https://img.shields.io/badge/ci-action-blue.svg)](https://github.com/franvozzi/port-knocking-tool/actions)
+[![CI](https://img.shields.io/badge/ci-action-blue.svg)](https://github.com/franvozzi/port-knocking-tool/actions) [![Release](https://img.shields.io/github/v/release/franvozzi/port-knocking-tool)](https://github.com/franvozzi/port-knocking-tool/releases)
 
 Resumen
 -------
