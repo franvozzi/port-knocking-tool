@@ -1,12 +1,13 @@
 """
 Setup para instalación del paquete
 """
+
 from setuptools import setup, find_packages
 from pathlib import Path
 
 # Leer README
 this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text(encoding='utf-8')
+long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="vpn-port-knocking-tool",
@@ -33,10 +34,10 @@ setup(
         "cryptography>=41.0.0",
     ],
     entry_points={
-        'console_scripts': [
-            'vpn-connect=src.main:main',
-            'vpn-config=src.cli.configurador_config:main',
-            'vpn-import=src.cli.importar_ovpn:main',
+        "console_scripts": [
+            "vpn-connect=src.main:main",
+            "vpn-config=src.cli.configurador_config:main",
+            "vpn-import=src.cli.importar_ovpn:main",
         ],
     },
 )

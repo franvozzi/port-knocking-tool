@@ -1,5 +1,6 @@
 import time
 
+
 class DummyPortKnocker:
     def __init__(self, target_ip, verbose=True, simulate_success=True):
         self.target_ip = target_ip

@@ -17,7 +17,7 @@ test_config = {
     "target_ip": "127.0.0.1",
     "knock_sequence": [[7000, "tcp"], [8000, "tcp"]],
     "interval": 0.5,
-    "target_port": 1194
+    "target_port": 1194,
 }
 
 config_path = Path("test_config.json")

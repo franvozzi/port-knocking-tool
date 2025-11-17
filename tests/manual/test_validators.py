@@ -20,7 +20,7 @@ config_valid = {
     "target_ip": "192.168.1.1",
     "knock_sequence": [[7000, "tcp"], [8000, "tcp"]],
     "interval": 0.5,
-    "target_port": 1194
+    "target_port": 1194,
 }
 if validator.validate(config_valid):
     print("  ✓ Config válido aceptado")
@@ -37,10 +37,7 @@ else:
 
 # Test 3: Puerto inválido
 print("\n[3/5] Testing puerto inválido...")
-config_invalid_port = {
-    **config_valid,
-    "knock_sequence": [[70000, "tcp"]]
-}
+config_invalid_port = {**config_valid, "knock_sequence": [[70000, "tcp"]]}
 if not validator.validate(config_invalid_port):
     print("  ✓ Puerto inválido detectado")
 else:
@@ -48,10 +45,7 @@ else:
 
 # Test 4: Protocolo inválido
 print("\n[4/5] Testing protocolo inválido...")
-config_invalid_proto = {
-    **config_valid,
-    "knock_sequence": [[7000, "http"]]
-}
+config_invalid_proto = {**config_valid, "knock_sequence": [[7000, "http"]]}
 if not validator.validate(config_invalid_proto):
     print("  ✓ Protocolo inválido detectado")
 else:

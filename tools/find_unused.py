@@ -10,14 +10,21 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / 'src'
-EXCLUDE_DIRS = {'tests', 'dummies', 'manual_tests', 'scripts', 'docs', 'vpn_port_knocking_tool.egg-info'}
-REPORT_DIR = ROOT / 'reports'
+SRC = ROOT / "src"
+EXCLUDE_DIRS = {
+    "tests",
+    "dummies",
+    "manual_tests",
+    "scripts",
+    "docs",
+    "vpn_port_knocking_tool.egg-info",
+}
+REPORT_DIR = ROOT / "reports"
 REPORT_DIR.mkdir(exist_ok=True)
 
 
 def iter_py_files(base: Path):
-    for p in base.rglob('*.py'):
+    for p in base.rglob("*.py"):
         # skip files in excluded top-level dirs
         parts = p.relative_to(ROOT).parts
         if parts[0] in EXCLUDE_DIRS:
@@ -31,17 +38,17 @@ def module_name_from_path(p: Path):
         rel = p.relative_to(SRC)
     except Exception:
         rel = p.relative_to(ROOT)
-    parts = list(rel.with_suffix('').parts)
+    parts = list(rel.with_suffix("").parts)
     # drop __init__ at end
-    if parts and parts[-1] == '__init__':
+    if parts and parts[-1] == "__init__":
         parts = parts[:-1]
-    return '.'.join(parts)
+    return ".".join(parts)
 
 
 def parse_imports(p: Path):
     imports = set()
     try:
-        src = p.read_text(encoding='utf-8')
+        src = p.read_text(encoding="utf-8")
     except Exception:
         return imports
     try:
@@ -59,7 +66,7 @@ def parse_imports(p: Path):
             # record module and module.name for each alias
             imports.add(mod)
             for n in node.names:
-                if n.name == '*':
+                if n.name == "*":
                     continue
                 imports.add(f"{mod}.{n.name}")
     return imports
@@ -74,7 +81,7 @@ def main():
         files.append(p)
         m = module_name_from_path(p)
         modules[m] = p
-    
+
     # parse imports per file
     for p in files:
         imports_map[str(p)] = parse_imports(p)
@@ -86,18 +93,23 @@ def main():
         for imp in imports:
             # heuristic matching: if any module name startswith imp or imp startswith module
             for m in list(modules.keys()):
-                if m == '':
+                if m == "":
                     continue
-                if m == imp or m.startswith(imp + '.') or imp.startswith(m + '.'):
+                if m == imp or m.startswith(imp + ".") or imp.startswith(m + "."):
                     imported_by[m].add(importer_path)
                 else:
                     # also match by tail name: e.g., import core -> core.config_manager
-                    tail = m.split('.')[-1]
+                    tail = m.split(".")[-1]
                     if imp == tail:
                         imported_by[m].add(importer_path)
 
     # entry points and explicit keep list
-    entry_files = {str(SRC / 'main.py'), str(SRC / 'server' / 'main.py'), str(SRC / 'server_knock.py'), str(SRC / 'ui' / 'gui_main.py')}
+    entry_files = {
+        str(SRC / "main.py"),
+        str(SRC / "server" / "main.py"),
+        str(SRC / "server_knock.py"),
+        str(SRC / "ui" / "gui_main.py"),
+    }
     keep_modules = set()
     for m, p in modules.items():
         if str(p) in entry_files:
@@ -115,17 +127,19 @@ def main():
             rel = p.relative_to(ROOT)
             if rel.parts[0] in EXCLUDE_DIRS:
                 continue
-            candidates.append({'module': m, 'path': str(p), 'reason': 'no_static_imports_found'})
+            candidates.append({"module": m, "path": str(p), "reason": "no_static_imports_found"})
 
     report = {
-        'root': str(ROOT),
-        'scanned_files_count': len(files),
-        'modules_count': len(modules),
-        'candidates_count': len(candidates),
-        'candidates': candidates,
+        "root": str(ROOT),
+        "scanned_files_count": len(files),
+        "modules_count": len(modules),
+        "candidates_count": len(candidates),
+        "candidates": candidates,
     }
 
-    (REPORT_DIR / 'unused_report.json').write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding='utf-8')
+    (REPORT_DIR / "unused_report.json").write_text(
+        json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
 
     # human friendly report
     lines = []
@@ -141,9 +155,11 @@ def main():
     else:
         lines.append("No se detectaron candidatos claros a archivos sin uso.")
 
-    (REPORT_DIR / 'unused_report.txt').write_text('\n'.join(lines), encoding='utf-8')
-    print(f"Reporte generado: {REPORT_DIR / 'unused_report.json'} and {REPORT_DIR / 'unused_report.txt'}")
+    (REPORT_DIR / "unused_report.txt").write_text("\n".join(lines), encoding="utf-8")
+    print(
+        f"Reporte generado: {REPORT_DIR / 'unused_report.json'} and {REPORT_DIR / 'unused_report.txt'}"
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

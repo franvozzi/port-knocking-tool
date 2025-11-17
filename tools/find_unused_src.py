@@ -8,14 +8,14 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / 'src'
-EXCLUDE_DIRS = {'.venv', 'vpn_port_knocking_tool.egg-info'}
-REPORT_DIR = ROOT / 'reports'
+SRC = ROOT / "src"
+EXCLUDE_DIRS = {".venv", "vpn_port_knocking_tool.egg-info"}
+REPORT_DIR = ROOT / "reports"
 REPORT_DIR.mkdir(exist_ok=True)
 
 
 def iter_py_files(base: Path):
-    for p in base.rglob('*.py'):
+    for p in base.rglob("*.py"):
         parts = p.relative_to(ROOT).parts
         if parts[0] in EXCLUDE_DIRS:
             continue
@@ -24,16 +24,16 @@ def iter_py_files(base: Path):
 
 def module_name_from_path(p: Path):
     rel = p.relative_to(SRC)
-    parts = list(rel.with_suffix('').parts)
-    if parts and parts[-1] == '__init__':
+    parts = list(rel.with_suffix("").parts)
+    if parts and parts[-1] == "__init__":
         parts = parts[:-1]
-    return '.'.join(parts)
+    return ".".join(parts)
 
 
 def parse_imports(p: Path):
     imports = set()
     try:
-        src = p.read_text(encoding='utf-8')
+        src = p.read_text(encoding="utf-8")
     except Exception:
         return imports
     try:
@@ -50,7 +50,7 @@ def parse_imports(p: Path):
                 continue
             imports.add(mod)
             for n in node.names:
-                if n.name == '*':
+                if n.name == "*":
                     continue
                 imports.add(f"{mod}.{n.name}")
     return imports
@@ -80,15 +80,20 @@ def main():
             for m in list(modules.keys()):
                 if not m:
                     continue
-                if m == imp or m.startswith(imp + '.') or imp.startswith(m + '.'):
+                if m == imp or m.startswith(imp + ".") or imp.startswith(m + "."):
                     imported_by[m].add(importer_path)
                 else:
-                    tail = m.split('.')[-1]
+                    tail = m.split(".")[-1]
                     if imp == tail:
                         imported_by[m].add(importer_path)
 
     # entry points to keep
-    entry_files = {str(SRC / 'main.py'), str(SRC / 'server' / 'main.py'), str(SRC / 'server_knock.py'), str(SRC / 'ui' / 'gui_main.py')}
+    entry_files = {
+        str(SRC / "main.py"),
+        str(SRC / "server" / "main.py"),
+        str(SRC / "server_knock.py"),
+        str(SRC / "ui" / "gui_main.py"),
+    }
     keep_modules = set()
     for m, p in modules.items():
         if str(p) in entry_files:
@@ -101,17 +106,19 @@ def main():
         importers = imported_by.get(m, set())
         if not importers:
             rel = p.relative_to(ROOT)
-            candidates.append({'module': m, 'path': str(p), 'reason': 'no_static_imports_found'})
+            candidates.append({"module": m, "path": str(p), "reason": "no_static_imports_found"})
 
     report = {
-        'root': str(ROOT),
-        'scanned_files_count': len(files),
-        'modules_count': len(modules),
-        'candidates_count': len(candidates),
-        'candidates': candidates,
+        "root": str(ROOT),
+        "scanned_files_count": len(files),
+        "modules_count": len(modules),
+        "candidates_count": len(candidates),
+        "candidates": candidates,
     }
 
-    (REPORT_DIR / 'unused_report_src.json').write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding='utf-8')
+    (REPORT_DIR / "unused_report_src.json").write_text(
+        json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
 
     lines = []
     lines.append(f"Root: {ROOT}")
@@ -126,9 +133,11 @@ def main():
     else:
         lines.append("No se detectaron candidatos claros en src/.")
 
-    (REPORT_DIR / 'unused_report_src.txt').write_text('\n'.join(lines), encoding='utf-8')
-    print(f"Reporte generado: {REPORT_DIR / 'unused_report_src.json'} and {REPORT_DIR / 'unused_report_src.txt'}")
+    (REPORT_DIR / "unused_report_src.txt").write_text("\n".join(lines), encoding="utf-8")
+    print(
+        f"Reporte generado: {REPORT_DIR / 'unused_report_src.json'} and {REPORT_DIR / 'unused_report_src.txt'}"
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
