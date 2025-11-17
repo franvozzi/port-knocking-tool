@@ -1,6 +1,5 @@
 import pytest
 import json
-from pathlib import Path
 from src.core.config_manager import ConfigManager
 
 @pytest.fixture

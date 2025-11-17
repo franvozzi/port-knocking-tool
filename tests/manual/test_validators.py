@@ -31,7 +31,7 @@ else:
 print("\n[2/5] Testing IP inválida...")
 config_invalid_ip = {**config_valid, "target_ip": "999.999.999.999"}
 if not validator.validate(config_invalid_ip):
-    print(f"  ✓ IP inválida detectada")
+    print("  ✓ IP inválida detectada")
 else:
     print("  ✗ IP inválida no detectada")
 
@@ -42,7 +42,7 @@ config_invalid_port = {
     "knock_sequence": [[70000, "tcp"]]
 }
 if not validator.validate(config_invalid_port):
-    print(f"  ✓ Puerto inválido detectado")
+    print("  ✓ Puerto inválido detectado")
 else:
     print("  ✗ Puerto inválido no detectado")
 
@@ -53,7 +53,7 @@ config_invalid_proto = {
     "knock_sequence": [[7000, "http"]]
 }
 if not validator.validate(config_invalid_proto):
-    print(f"  ✓ Protocolo inválido detectado")
+    print("  ✓ Protocolo inválido detectado")
 else:
     print("  ✗ Protocolo inválido no detectado")
 
@@ -61,7 +61,7 @@ else:
 print("\n[5/5] Testing campo faltante...")
 config_missing = {"target_ip": "192.168.1.1"}
 if not validator.validate(config_missing):
-    print(f"  ✓ Campo faltante detectado")
+    print("  ✓ Campo faltante detectado")
 else:
     print("  ✗ Campo faltante no detectado")
 

@@ -199,7 +199,7 @@ class TestPortKnockerIntegration(unittest.TestCase):
                     continue
                 except OSError:
                     break
-        except Exception as e:
+        except Exception:
             pass
         finally:
             if sock:
@@ -236,7 +236,7 @@ class TestPortKnockerIntegration(unittest.TestCase):
                     continue
                 except OSError:
                     break
-        except Exception as e:
+        except Exception:
             pass
         finally:
             if sock:

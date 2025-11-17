@@ -1,4 +1,3 @@
-import base64
 from cryptography.fernet import Fernet, InvalidToken
 from pathlib import Path
 from typing import Tuple

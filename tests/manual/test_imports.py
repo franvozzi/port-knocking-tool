@@ -5,7 +5,7 @@ Verifica que todos los módulos se puedan importar correctamente
 """
 import sys
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 
 # Agregar src al path
 PROJECT_ROOT = Path(__file__).parent.parent.parent

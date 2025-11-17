@@ -2,8 +2,6 @@ import tkinter as tk
 from tkinter import messagebox
 import threading
 import time
-from pathlib import Path
-import requests
 
 from core.config_manager import ConfigManager
 from core.port_knocker import PortKnocker

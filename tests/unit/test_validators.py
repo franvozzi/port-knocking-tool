@@ -1,4 +1,3 @@
-import pytest
 from src.utils.validators import ConfigValidator
 
 class TestConfigValidator:

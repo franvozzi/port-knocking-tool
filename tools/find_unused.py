@@ -7,7 +7,6 @@ Limitaciones: análisis estático (no detecta imports dinámicos ni usos por sub
 """
 import ast
 import json
-import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]

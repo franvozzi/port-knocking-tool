@@ -26,7 +26,7 @@ decrypted_user, decrypted_pass = encryptor.decrypt_credentials(encrypted)
 if decrypted_user == username and decrypted_pass == password:
     print(f"  ✓ Descifrado correcto: {decrypted_user}")
 else:
-    print(f"  ✗ Error en descifrado")
+    print("  ✗ Error en descifrado")
 
 # Test 2: Guardar/Cargar
 print("\n[2/3] Testing guardar/cargar...")
@@ -36,9 +36,9 @@ print(f"  ✓ Guardado en {creds_file}")
 
 loaded_user, loaded_pass = encryptor.load_encrypted_credentials(creds_file)
 if loaded_user == username and loaded_pass == password:
-    print(f"  ✓ Cargado correctamente")
+    print("  ✓ Cargado correctamente")
 else:
-    print(f"  ✗ Error al cargar")
+    print("  ✗ Error al cargar")
 
 # Test 3: Datos inválidos
 print("\n[3/3] Testing datos inválidos...")

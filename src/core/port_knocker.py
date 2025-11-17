@@ -1,9 +1,9 @@
 import socket
 import time
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 from datetime import datetime
 
-from utils.exceptions import PortKnockingError, NetworkError
+from utils.exceptions import PortKnockingError
 from utils.constants import DEFAULT_KNOCK_TIMEOUT, DEFAULT_FIREWALL_PROCESS_TIME
 from monitoring.logger import StructuredLogger
 
@@ -156,7 +156,7 @@ class PortKnocker:
         self._log("RESULTADO DE VERIFICACION:")
         self._log("-"*70)
         self._log(f"Puerto: {port}")
-        self._log(f"Estado: [+] ABIERTO")
+        self._log("Estado: [+] ABIERTO")
         self._log(f"Intentos exitosos: {result['success_count']}/{result['total_attempts']}")
         if result['avg_latency'] > 0:
             self._log(f"Latencia promedio: {result['avg_latency']:.2f}ms")
@@ -169,7 +169,7 @@ class PortKnocker:
         self._log("RESULTADO DE VERIFICACION:")
         self._log("-"*70)
         self._log(f"Puerto: {port}")
-        self._log(f"Estado: [-] CERRADO")
+        self._log("Estado: [-] CERRADO")
         self._log(f"Intentos exitosos: {result['success_count']}/{result['total_attempts']}")
         self._log("-"*70 + "\n")
         self._log("[FAILED] PORT KNOCKING FALLO - Puerto sigue cerrado")
