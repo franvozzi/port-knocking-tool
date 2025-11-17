@@ -1,8 +1,8 @@
 {
   "root": "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool",
-  "scanned_files_count": 32,
-  "modules_count": 32,
-  "candidates_count": 10,
+  "scanned_files_count": 27,
+  "modules_count": 27,
+  "candidates_count": 5,
   "candidates": [
     {
       "module": "",
@@ -15,38 +15,13 @@
       "reason": "no_static_imports_found"
     },
     {
-      "module": "ui.themes",
-      "path": "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/ui/themes.py",
-      "reason": "no_static_imports_found"
-    },
-    {
       "module": "security",
       "path": "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/security/__init__.py",
       "reason": "no_static_imports_found"
     },
     {
-      "module": "security.totp_manager",
-      "path": "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/security/totp_manager.py",
-      "reason": "no_static_imports_found"
-    },
-    {
       "module": "network",
       "path": "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/network/__init__.py",
-      "reason": "no_static_imports_found"
-    },
-    {
-      "module": "network.mikrotik_api_client",
-      "path": "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/network/mikrotik_api_client.py",
-      "reason": "no_static_imports_found"
-    },
-    {
-      "module": "cli.importar_ovpn",
-      "path": "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/cli/importar_ovpn.py",
-      "reason": "no_static_imports_found"
-    },
-    {
-      "module": "cli.configurador_config",
-      "path": "/Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/cli/configurador_config.py",
       "reason": "no_static_imports_found"
     },
     {

@@ -1,16 +1,11 @@
 Root: /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool
-Scanned files (src): 32
-Modules: 32
-Candidates (no static imports): 10
+Scanned files (src): 27
+Modules: 27
+Candidates (no static imports): 5
 
 Posibles archivos sin uso en src/ (revisar manualmente):
  - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/__init__.py  ()
  - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/test_knockd_server.py  (test_knockd_server)
- - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/ui/themes.py  (ui.themes)
  - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/security/__init__.py  (security)
- - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/security/totp_manager.py  (security.totp_manager)
  - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/network/__init__.py  (network)
- - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/network/mikrotik_api_client.py  (network.mikrotik_api_client)
- - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/cli/importar_ovpn.py  (cli.importar_ovpn)
- - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/cli/configurador_config.py  (cli.configurador_config)
  - /Users/franvozzi/Documents/Workspace/Port Knocking tool 2/port-knocking-tool/port-knocking-tool/src/cli/__init__.py  (cli)
