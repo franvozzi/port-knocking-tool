@@ -7,6 +7,30 @@ Este documento describe los componentes principales del sistema y cómo interact
 El sistema se compone de tres partes fundamentales:
 
 1.  **Cliente de Escritorio (`VPNConnect`)**:
+    - Aplicación Python con UI en `tkinter`.
+    - Recoge el código TOTP del usuario, valida vía servidor y ejecuta la secuencia de port knocking.
+
+2.  **Servidor de Verificación TOTP**:
+    - Servicio web que valida códigos y comunica con el router MikroTik para autorizar IPs.
+
+3.  **Router MikroTik (Firewall)**:
+    - Gestiona listas `vpn_authorized_ips` y reglas de port knocking.
+
+## Flujo de Datos
+
+1. Usuario introduce código en el cliente.
+2. Cliente envía código al servidor (`/verify_totp`).
+3. Servidor valida y autoriza la IP en el router.
+4. Cliente ejecuta port knocking y establece VPN.
+# Arquitectura del Proyecto
+
+Este documento describe los componentes principales del sistema y cómo interactúan entre sí.
+
+## Componentes Principales
+
+El sistema se compone de tres partes fundamentales:
+
+1.  **Cliente de Escritorio (`VPNConnect`)**:
     - Es una aplicación Python con una interfaz gráfica desarrollada en `tkinter`.
     - Su función es guiar al usuario a través del proceso de conexión segura.
     - Se encarga de:

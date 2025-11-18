@@ -1,5 +1,24 @@
 # Guía de Contribución
 
+Gracias por tu interés en contribuir. Resumen rápido:
+
+## Flujo de contribución
+
+1. Fork -> clona tu fork -> crea rama.
+2. Implementa cambios y añade tests si aplica.
+3. Abre PR contra `main` del repositorio original.
+
+## Configuración rápida de desarrollo
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+python -m pytest
+```
+# Guía de Contribución
+
 ¡Gracias por tu interés en contribuir a este proyecto! A continuación, encontrarás una guía para ayudarte a empezar.
 
 ## Cómo Contribuir
