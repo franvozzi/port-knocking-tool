@@ -1,22 +1,5 @@
 # Manual de Usuario: Conexión Segura a la VPN Corporativa
 
-Guía rápida para usuarios:
-
-1. Instala Google Authenticator o similar.
-2. Escanea el QR proporcionado por TI.
-3. Abre `VPNConnect`, introduce el código de 6 dígitos y pulsa "Conectar".
-
-Si el código no funciona, revisa la hora del teléfono o contacta con TI.
-# Manual de Usuario: Conexión Segura a la VPN Corporativa
-
-Guía sencilla para usuarios finales: configurar la app de autenticación (Google Authenticator, Authy), obtener el QR y usar `VPNConnect` introduciendo el código de 6 dígitos antes de conectar.
-
-Pasos rápidos:
-- Instala Google Authenticator.
-- Escanea el QR provisto por tu administrador.
-- Abre `VPNConnect`, introduce el código 2FA y pulsa "Conectar".
-# Manual de Usuario: Conexión Segura a la VPN Corporativa
-
 **Versión:** 1.0
 **Fecha:** Noviembre 2023
 

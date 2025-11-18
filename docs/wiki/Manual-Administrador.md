@@ -1,27 +1,5 @@
 # Manual de Administrador: Configuración de 2FA con TOTP y Port Knocking
 
-Versión 1.0 — pasos resumidos para administradores: habilitar API SSL en MikroTik, crear `vpn_authorized_ips`, configurar cadenas de port knocking y desplegar el servidor Flask con variables de entorno (`MIKROTIK_IP`, `MIKROTIK_USER`, `MIKROTIK_PASS`, `TOTP_SECRET`).
-
-Para instrucciones completas ver `docs/Manual_Administrador_2FA.md` en el repositorio.
-# Manual de Administrador: Configuración de 2FA con TOTP y Port Knocking
-
-**Versión:** 1.0
-**Fecha:** Noviembre 2023
-**Audiencia:** Administradores de Sistemas y TI
-
-## Resumen
-
-Manual detallado para configurar MikroTik, desplegar el servidor de verificación TOTP y preparar el cliente.
-
-## Pasos clave
-- Habilitar API SSL en MikroTik y crear usuario `api-user`.
-- Crear `vpn_authorized_ips` en `IP > Firewall > Address Lists`.
-- Configurar la cadena de port-knocking y reglas que añaden `knock_stage_*`.
-- Desplegar servidor Flask con variables de entorno: `MIKROTIK_IP`, `MIKROTIK_USER`, `MIKROTIK_PASS`, `TOTP_SECRET`.
-
-Consulta el archivo completo en el repositorio para detalles de cada comando y ejemplos.
-# Manual de Administrador: Configuración de 2FA con TOTP y Port Knocking
-
 **Versión:** 1.0
 **Fecha:** Noviembre 2023
 **Audiencia:** Administradores de Sistemas y TI
