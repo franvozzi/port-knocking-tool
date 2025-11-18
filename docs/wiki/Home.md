@@ -22,19 +22,14 @@ Esto crea una defensa en profundidad que hace que el acceso no autorizado sea ex
 
 Accede rápidamente a las páginas principales de la Wiki:
 
-- [Home](Home.md)
-- [Arquitectura del Proyecto](Arquitectura-del-Proyecto.md)
 - [Arquitectura (detallada)](architecture.md)
+- [Arquitectura del Proyecto](Arquitectura-del-Proyecto.md)
 - [Guía de Contribución](Guia-de-Contribucion.md)
-- [Manual de Administrador](Manual-Administrador.md)
-- [Manual de Usuario Final](Manual-Usuario-Final.md)
+- [Manual de Administrador: Configuración de 2FA con TOTP y Port Knocking](Manual-Administrador.md)
+- [Manual de Usuario: Conexión Segura a la VPN Corporativa](Manual-Usuario-Final.md)
 - [Testing](testing.md)
 
-Si añades nuevas páginas a `docs/wiki/` puedo regenerar este índice automáticamente y publicarlo en la Wiki.
-# ¡Bienvenido a la Wiki del Proyecto VPN Port Knocking!
-
-Este proyecto proporciona una solución de seguridad multicapa para el acceso a VPNs corporativas, combinando la autenticación de dos factores (2FA) con TOTP, el "IP whitelisting" dinámico y el "port knocking".
-
+Si añades nuevas páginas a `docs/wiki/` puedes regenerar este índice automáticamente ejecutando `scripts/generate_wiki_toc.py`.
 ## Navegación
 
 - **[Arquitectura del Proyecto](arquitectura-del-proyecto.md)**: Entiende cómo funcionan juntos el cliente, el servidor y el router.
