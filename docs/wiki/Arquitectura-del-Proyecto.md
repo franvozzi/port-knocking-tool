@@ -14,6 +14,40 @@ El sistema se compone de tres partes fundamentales:
         - Comunicarse con el **Servidor de Verificación** para validar el código.
         - Ejecutar la secuencia de **port knocking** contra el router.
         - Establecer la conexión final a través de OpenVPN.
+
+2.  **Servidor de Verificación TOTP**:
+    - Es una aplicación web ligera construida con `Flask`.
+    - Actúa como el "guardián" del sistema de seguridad.
+    - Sus responsabilidades son validar códigos TOTP y, si corresponden, comunicar al router para autorizar la IP del cliente.
+
+3.  **Router MikroTik (Firewall)**:
+    - Es el componente de hardware que controla el acceso a la red y gestiona la lista `vpn_authorized_ips`.
+
+## Flujo de Datos
+
+1.  **Usuario -> Cliente**: Introduce su código TOTP en la aplicación.
+2.  **Cliente -> Servidor**: Envía el código al endpoint `/verify_totp`.
+3.  **Servidor -> Router**: Si el código es válido, añade la IP del cliente a `vpn_authorized_ips`.
+4.  **Cliente -> Router**: Ejecuta la secuencia de port knocking.
+5.  **Router**: Al detectar la secuencia desde una IP autorizada, abre el puerto VPN para esa IP.
+
+Este diseño separa responsabilidades y reduce la superficie de ataque.
+# Arquitectura del Proyecto
+
+Este documento describe los componentes principales del sistema y cómo interactúan entre sí.
+
+## Componentes Principales
+
+El sistema se compone de tres partes fundamentales:
+
+1.  **Cliente de Escritorio (`VPNConnect`)**:
+    - Es una aplicación Python con una interfaz gráfica desarrollada en `tkinter`.
+    - Su función es guiar al usuario a través del proceso de conexión segura.
+    - Se encarga de:
+        - Recoger el código TOTP del usuario.
+        - Comunicarse con el **Servidor de Verificación** para validar el código.
+        - Ejecutar la secuencia de **port knocking** contra el router.
+        - Establecer la conexión final a través de OpenVPN.
     - Es un cliente compilado (ej. `.exe` o `.app`) que se distribuye a los usuarios finales.
 
 2.  **Servidor de Verificación TOTP**:
