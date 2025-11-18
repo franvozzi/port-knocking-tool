@@ -17,6 +17,20 @@ En un entorno corporativo, la seguridad del acceso remoto es fundamental. Una VP
 2.  **2FA con TOTP**: Antes de que el "port knocking" sea siquiera posible, el usuario debe verificar su identidad con un código de un solo uso, y su IP es autorizada temporalmente en el firewall.
 
 Esto crea una defensa en profundidad que hace que el acceso no autorizado sea extremadamente difícil.
+
+## Índice automático
+
+Accede rápidamente a las páginas principales de la Wiki:
+
+- [Home](Home.md)
+- [Arquitectura del Proyecto](Arquitectura-del-Proyecto.md)
+- [Arquitectura (detallada)](architecture.md)
+- [Guía de Contribución](Guia-de-Contribucion.md)
+- [Manual de Administrador](Manual-Administrador.md)
+- [Manual de Usuario Final](Manual-Usuario-Final.md)
+- [Testing](testing.md)
+
+Si añades nuevas páginas a `docs/wiki/` puedo regenerar este índice automáticamente y publicarlo en la Wiki.
 # ¡Bienvenido a la Wiki del Proyecto VPN Port Knocking!
 
 Este proyecto proporciona una solución de seguridad multicapa para el acceso a VPNs corporativas, combinando la autenticación de dos factores (2FA) con TOTP, el "IP whitelisting" dinámico y el "port knocking".
