@@ -79,3 +79,35 @@ Dónde mirar
 Contribuir
 ---------
 Si quieres que añada guías de empaquetado, instrucciones de despliegue o un changelog más detallado, lo redacto y lo comito.
+
+Actualizar la Wiki
+------------------
+La documentación destinada a la Wiki se encuentra en `docs/wiki/`.
+
+- Regenerar el índice (TOC) localmente:
+
+```bash
+python scripts/generate_wiki_toc.py
+```
+
+- Publicar manualmente la Wiki (opcional):
+
+```bash
+tmpdir=$(mktemp -d)
+git clone https://github.com/<owner>/<repo>.wiki.git "$tmpdir"
+rsync -av --delete --exclude='.git' docs/wiki/ "$tmpdir/"
+cd "$tmpdir"
+git add -A
+git commit -m "docs(wiki): sync docs/wiki/ -> GitHub Wiki"
+git push origin master
+rm -rf "$tmpdir"
+```
+
+- Automatizar con GitHub Actions
+
+He añadido un workflow (`.github/workflows/wiki-sync.yml`) que se ejecuta en pushes a `main` y realiza dos tareas:
+
+1. Ejecuta `scripts/generate_wiki_toc.py` y, si `docs/wiki/Home.md` cambia, hace commit a `main`.
+2. Si el repositorio tiene configurado el secreto `WIKI_PAT` (un Personal Access Token con permiso `repo`), el workflow clona el repositorio Wiki (`<repo>.wiki.git`) y sincroniza `docs/wiki/` con la Wiki pública.
+
+Para habilitar el push automático a la Wiki, añade el secreto `WIKI_PAT` en Settings → Secrets del repositorio con un PAT que tenga permiso `repo`.
